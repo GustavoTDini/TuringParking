@@ -41,7 +41,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private var mCurrentPosition: LatLng = LatLng(-23.550244, -46.633908)
     private var mPositionMarker: Marker? = null
 
-
     override fun onMapReady(googleMap: GoogleMap) {
         googleMap.setOnMarkerClickListener(this)
         getCurrentPositionAddMark(googleMap)

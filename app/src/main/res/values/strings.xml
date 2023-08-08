@@ -13,6 +13,7 @@
     <string name="title_activity_login">Login</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Senha</string>
+    <string name="prompt_code">Código</string>
     <string name="action_sign_in">Entrar</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
@@ -54,5 +55,23 @@
     <string name="register_text">Registre-se em nosso App e não perca mais tempo procurando vagas!</string>
     <string name="prompt_password_confirm">Confirme sua Senha</string>
     <string name="register_btn">Registrar</string>
+
+    <!-- recapcha labels -->
+    <string name="recaptcha0">dmw8n</string>
+    <string name="recaptcha1">pdw38</string>
+    <string name="recaptcha2">2en7g</string>
+    <string name="recaptcha3">8fexn</string>
+    <string name="recaptcha4">nn4wx</string>
+    <string name="recaptcha5">w46ep</string>
+    <string name="recaptcha6">3den6</string>
+    <string name="recaptcha7">3n3cf</string>
+    <string name="recaptcha8">56ncx</string>
+    <string name="recaptcha9">gp22x</string>
+    <string name="recaptcha10">xymfn</string>
+    <string name="recaptcha11">325fb</string>
+    <string name="recaptcha12">7dgc2</string>
+    <string name="recaptcha13">ggd7m</string>
+    <string name="recaptcha14">dznbn</string>
+    <string name="recaptcha15">8db67</string>
 
 </resources>
