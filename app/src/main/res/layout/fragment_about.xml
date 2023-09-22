@@ -21,20 +21,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/icone_do_app"
-            android:src="@drawable/logo_sem_fundo" />
+            android:src="@drawable/logo_turing_parking_nome_lg" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Turing Parking"
-            android:textColor="@color/white"
-            android:textSize="32sp"
-            android:textStyle="bold" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -47,26 +40,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linear_layout_frame">
 
-        <LinearLayout
+
+        <ImageView
+            android:id="@+id/imageView3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Turing Team"
-                android:textColor="@color/black"
-                android:textSize="32sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/turing_bot" />
-        </LinearLayout>
+            android:layout_height="100dp"
+            android:src="@drawable/turing_team_lg" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -112,8 +91,8 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
         android:src="@drawable/fiap"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -73,5 +73,7 @@
     <string name="recaptcha13">ggd7m</string>
     <string name="recaptcha14">dznbn</string>
     <string name="recaptcha15">8db67</string>
+    <string name="menu_add">Adicione seu Estacionamento</string>
+    <string name="menu_exit">Sair do App</string>
 
 </resources>

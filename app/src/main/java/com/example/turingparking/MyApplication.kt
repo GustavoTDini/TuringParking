@@ -18,5 +18,4 @@ class MyApplication: Application() {
         //Room
         database = TuringDB.getDatabase(this, applicationScope)
     }
-
 }

@@ -23,12 +23,14 @@ import com.example.turingparking.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private lateinit var auth: FirebaseAuth
     private val permissionId = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_map, R.id.nav_indique, R.id.nav_historico, R.id.nav_about
+                R.id.nav_map, R.id.nav_indique, R.id.nav_historico, R.id.nav_about, R.id.nav_add, R.id.nav_exit
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

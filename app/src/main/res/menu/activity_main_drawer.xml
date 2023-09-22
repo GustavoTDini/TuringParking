@@ -6,23 +6,27 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_map"
-            android:icon="@drawable/icon"
-            android:title="@string/menu_map"
-
-            android:iconTintMode="src_atop"/>
+            android:icon="@drawable/logo_turing_parking"
+            android:title="@string/menu_map" />
         <item
             android:id="@+id/nav_indique"
-            android:icon="@drawable/gift_box_icon"
+            android:icon="@drawable/ic_card_giftcard_24"
             android:title="@string/menu_indique" />
         <item
             android:id="@+id/nav_historico"
             android:icon="@drawable/ic_history_24"
-            android:iconTint="@color/primary"
             android:title="@string/menu_history" />
         <item
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_info_24"
-            android:iconTint="@color/primary"
             android:title="@string/menu_about" />
+        <item
+            android:id="@+id/nav_add"
+            android:icon="@drawable/add_location_24"
+            android:title="@string/menu_add" />
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@drawable/exit_to_app_24"
+            android:title="@string/menu_exit" />
     </group>
 </menu>

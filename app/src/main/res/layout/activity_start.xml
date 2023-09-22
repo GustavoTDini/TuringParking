@@ -9,29 +9,14 @@
 
     <ImageView
         android:id="@+id/turingIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo_sem_fundo"
+        app:srcCompat="@drawable/logo_turing_parking_nome_lg"
         android:contentDescription="@string/turing_icon_content"/>
-
-    <TextView
-        android:id="@+id/turingText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="sans-serif"
-        android:text="@string/turing_parking"
-        android:textColor="@color/primary"
-        android:textSize="45sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/turingIcon" />
 
     <Button
         android:id="@+id/loginButton"

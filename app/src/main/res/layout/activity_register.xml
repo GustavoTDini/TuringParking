@@ -21,7 +21,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:src="@drawable/logo_sem_fundo"
+            android:src="@drawable/logo_turing_parking"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/icone_do_app" />
 

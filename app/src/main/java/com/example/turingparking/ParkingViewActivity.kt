@@ -82,10 +82,6 @@ class ParkingViewActivity : AppCompatActivity() {
         favButton.setOnClickListener{
             Toast.makeText(this@ParkingViewActivity, "Função ainda a ser implementada", Toast.LENGTH_SHORT).show()
         }
-
-
-
-
     }
 
 
