@@ -7,6 +7,7 @@ import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.turingparking.BuildConfig
 import com.google.gson.Gson
 import java.io.BufferedReader
 import java.io.IOException
@@ -96,7 +97,7 @@ class HttpRequestHelpers{
         }
         fun postDataUsingVolley(email: String, code: String, context: Context) {
             // on below line specifying the url at which we have to make a post request
-            val apiKey = "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"
+            val apiKey = { BuildConfig.BREVO_API_KEY}
             val url = "https://api.brevo.com/v3/smtp/email"
             // creating a new variable for our request queue
             val queue = Volley.newRequestQueue(context)
