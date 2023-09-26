@@ -1,6 +1,7 @@
 package com.example.turingparking
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,7 +9,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.turingparking.network.HttpRequestHelpers
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,6 +24,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -37,17 +41,21 @@ class RegisterActivity : AppCompatActivity() {
 
         val registerButton = findViewById<Button>(R.id.registerBtn)
         registerButton.setOnClickListener{
-            if (loginEditText.text.isEmpty() ||
-                passwordEditText.text.isEmpty()||
-                passwordConfirmEditText.text.isEmpty() ){
-                Toast.makeText(this@RegisterActivity, "Por Favor preencha todos os campos", Toast.LENGTH_SHORT).show()
-            } else if (passwordEditText.editableText.toString() != passwordConfirmEditText.editableText.toString()){
-                Toast.makeText(this@RegisterActivity, "As senhas não conferem", Toast.LENGTH_SHORT).show()
-            }else if (!loginEditText.editableText.matches(emailRegex.toRegex())) {
-                Toast.makeText(this@RegisterActivity, "Por Favor coloque um e-mail válido", Toast.LENGTH_SHORT).show()
-            } else if (isPasswordValid(passwordEditText.editableText.toString())) {
-                saveUser(loginEditText.editableText.toString(), passwordEditText.editableText.toString())
-            }
+            createCode()
+            HttpRequestHelpers.postDataUsingVolley(loginEditText.editableText.toString(), code, this)
+
+//            if (loginEditText.text.isEmpty() ||
+//                passwordEditText.text.isEmpty()||
+//                passwordConfirmEditText.text.isEmpty() ){
+//                Toast.makeText(this@RegisterActivity, "Por Favor preencha todos os campos", Toast.LENGTH_SHORT).show()
+//            } else if (passwordEditText.editableText.toString() != passwordConfirmEditText.editableText.toString()){
+//                Toast.makeText(this@RegisterActivity, "As senhas não conferem", Toast.LENGTH_SHORT).show()
+//            }else if (!loginEditText.editableText.matches(emailRegex.toRegex())) {
+//                Toast.makeText(this@RegisterActivity, "Por Favor coloque um e-mail válido", Toast.LENGTH_SHORT).show()
+//            } else if (isPasswordValid(passwordEditText.editableText.toString())) {
+//
+//                //saveUser(loginEditText.editableText.toString(), passwordEditText.editableText.toString())
+//            }
         }
 
         val returnButton = findViewById<Button>(R.id.returnBtn)

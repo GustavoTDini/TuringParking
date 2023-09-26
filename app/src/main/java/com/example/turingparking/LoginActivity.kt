@@ -80,7 +80,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 .onFailure { exception ->
                     Log.d("reCAPTCHA", "Failed to initialize reCAPTCHA")
-                    returnToStart()
+                    //returnToStart()
                 }
         }
     }

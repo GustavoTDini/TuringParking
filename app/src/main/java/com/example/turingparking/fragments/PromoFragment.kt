@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.turingparking.R
+import com.example.turingparking.network.HttpRequestHelpers
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,7 +30,9 @@ class PromoFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_promo, container, false)
         val registerButton = view.findViewById<Button>(R.id.promoBtn)
+        val promoEditText = view.findViewById<EditText>(R.id.emailPromo)
         registerButton.setOnClickListener{
+            HttpRequestHelpers.postDataUsingVolley(promoEditText.editableText.toString(), "promo", this.requireContext())
             Toast.makeText(this.requireContext(), "Promoção entrará em breve", Toast.LENGTH_SHORT).show()
         }
         return view
