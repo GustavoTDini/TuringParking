@@ -40,6 +40,7 @@ class MailHelpers {
                     "</tr><tr><td align=\"center\" class=\"es-p5t es-p5b es-p40r es-p40l es-m-p0r es-m-p0l\"><p>Para confirmar seu cadastro, por favor informe o código abaixo, ele somente ficará válido por 5 minutos.</p></td></tr></table></td></tr></table></td></tr><tr><td class=\"es-p10t es-p10b es-p20r es-p20l\" align=\"left\" bgcolor=\"#0060ab\" style=\"background-color: #0060ab;border-radius: 15px\"><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><td width=\"560\" align=\"center\" valign=\"top\"><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-radius: 30px;border-collapse: separate;background-color: #0060ab\" bgcolor=\"#0060ab\" role=\"presentation\"><tr><td align=\"center\" class=\"es-m-txt-c es-p20t es-p20r es-p20l\" bgcolor=\"#0060ab\"><h2 style=\"color: #d3e3ff;line-height: 100%\">Código de confirmação</h2></td></tr><tr><td align=\"center\" class=\"es-m-txt-c es-p20b\" bgcolor=\"#0060ab\"><h1 style=\"color: #10fbfd\"><strong>${code}</strong></h1></td>\n" +
                     "</tr></table></td></tr></table></td></tr></table></td></tr></table><table cellpadding=\"0\" cellspacing=\"0\" class=\"es-footer\" align=\"center\"><tr><td align=\"center\"><table class=\"es-footer-body\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" width=\"640\" style=\"background-color: transparent\"><tr><td class=\"es-p20t es-p20b es-p20r es-p20l\" align=\"left\"><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><td width=\"600\" align=\"left\"><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" role=\"presentation\"><tr><td align=\"right\" style=\"font-size: 0px\"><amp-img class=\"adapt-img\" src=\"https://qxvvzs.stripocdn.email/content/guids/CABINET_982defb57c54e7bfffcb800734d15f949a970475d9e1a87b3f8af0f856c07891/images/logos_turing_parking07.png\" alt style=\"display: block\" height=\"40\" width=\"160\" layout=\"responsive\"></amp-img></td></tr></table></td></tr></table></td></tr></table></td></tr></table></td></tr></table></div></body></html>"
         }
+
         fun postMailUsingVolley(email: String, code: String, context: Context) {
             // on below line specifying the url at which we have to make a post request
             val apiKey = BuildConfig.BREVO_API_KEY
@@ -55,6 +56,7 @@ class MailHelpers {
                         "Email enviado!",
                         Toast.LENGTH_SHORT
                     ).show()
+                    Log.d(TAG, "Email enviado")
                 }, Response.ErrorListener { error -> // handling error on below line.
                     Toast.makeText(context, "Falha no envio do email!", Toast.LENGTH_SHORT)
                         .show()
@@ -70,7 +72,6 @@ class MailHelpers {
                         val subject = "Verify Code"
                         val htmlContent = setCodeHtml(code)
                         val bodyJson = gson.toJson(Body(sender, toArray, subject, htmlContent))
-                        Log.d(TAG, "postMailUsingVolley: $bodyJson")
                         return bodyJson.toString().encodeToByteArray()
                     }
 
@@ -80,7 +81,6 @@ class MailHelpers {
                         headers["content-type"] = "application/json"
                         headers["accept"] = "application/json"
                         headers["api-key"] = apiKey
-                        Log.d(TAG, "getHeaders: $headers")
                         return headers
                     }
                 }

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.turingparking.data.Parking
 import com.example.turingparking.data.Stop
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -19,12 +20,14 @@ import java.util.Currency
 
 class ParkingViewActivity : AppCompatActivity() {
     private var mParking: Parking? = null
+    private lateinit var auth: FirebaseAuth
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parking_view)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        val currentUser = auth.currentUser
 
         val tvTitle = findViewById<TextView>(R.id.titleview)
         val tvPrice = findViewById<TextView>(R.id.priceTxt)
@@ -63,7 +66,7 @@ class ParkingViewActivity : AppCompatActivity() {
                 val timestamp = LocalDate.now().toString()
                 val preferences = this@ParkingViewActivity.getSharedPreferences("user_preferences", MODE_PRIVATE)
                 val userId = preferences.getInt("UserId",-1)
-                if (userId == -1){
+                if (currentUser !==  null){
                     Toast.makeText(this@ParkingViewActivity, "Usuario não Logado", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@ParkingViewActivity, StartActivity::class.java)
                     startActivity(intent)

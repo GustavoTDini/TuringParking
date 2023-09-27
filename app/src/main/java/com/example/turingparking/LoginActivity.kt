@@ -104,7 +104,6 @@ class LoginActivity : AppCompatActivity() {
                         "Falha na autenticação!",
                         Toast.LENGTH_SHORT,
                     ).show()
-                    returnToStart()
                 }
             }
     }
@@ -116,6 +115,7 @@ class LoginActivity : AppCompatActivity() {
                 .onSuccess { token->
                     Toast.makeText(baseContext, "Usuário verificado pelo reCAPTCHA", Toast.LENGTH_SHORT).show()
                     Log.d("reCAPTCHA", token)
+
                     goToMain()
                 }
                 .onFailure { e ->
