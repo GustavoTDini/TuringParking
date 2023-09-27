@@ -10,7 +10,7 @@ interface StopDao {
     suspend fun getAll(): List<Stop>
 
     @Query("SELECT * FROM stop WHERE user_id LIKE :id")
-    suspend fun getStopsFromUser(id: Int): List<Stop>
+    suspend fun getStopsFromUser(id: String): List<Stop>
 
     @Insert
     suspend fun insert(stop: Stop)

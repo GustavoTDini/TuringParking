@@ -19,6 +19,9 @@ import com.example.turingparking.StartActivity
 import com.example.turingparking.adapters.HistoryRecyclerViewAdapter
 import com.example.turingparking.data.Stop
 import com.example.turingparking.data.StopParking
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 /**
@@ -32,9 +35,11 @@ class HistoryFragment : Fragment() {
     private var showList: ArrayList<StopParking> = ArrayList()
     private lateinit var list: RecyclerView
     private lateinit var empty: LinearLayout
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         getList()
     }
 
@@ -54,8 +59,8 @@ class HistoryFragment : Fragment() {
             "user_preferences",
             AppCompatActivity.MODE_PRIVATE
         )
-        userId = preferences.getInt("UserId", -1)
-        if (userId == -1) {
+        val userId = auth.currentUser?.providerId.toString()
+        if (auth.currentUser == null) {
             Toast.makeText(requireActivity(), "Usuario não Logado", Toast.LENGTH_SHORT).show()
             val intent = Intent(requireActivity(), StartActivity::class.java)
             startActivity(intent)

@@ -3,6 +3,7 @@ package com.example.turingparking
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -13,6 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.turingparking.data.Parking
 import com.example.turingparking.data.Stop
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -27,7 +30,9 @@ class ParkingViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parking_view)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        auth = Firebase.auth
         val currentUser = auth.currentUser
+        Log.d("ParkingViewActivity", "currentUser: $currentUser")
 
         val tvTitle = findViewById<TextView>(R.id.titleview)
         val tvPrice = findViewById<TextView>(R.id.priceTxt)
@@ -65,8 +70,8 @@ class ParkingViewActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 val timestamp = LocalDate.now().toString()
                 val preferences = this@ParkingViewActivity.getSharedPreferences("user_preferences", MODE_PRIVATE)
-                val userId = preferences.getInt("UserId",-1)
-                if (currentUser !==  null){
+                val userId = auth.currentUser?.providerId.toString()
+                if (auth.currentUser ==  null){
                     Toast.makeText(this@ParkingViewActivity, "Usuario não Logado", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@ParkingViewActivity, StartActivity::class.java)
                     startActivity(intent)

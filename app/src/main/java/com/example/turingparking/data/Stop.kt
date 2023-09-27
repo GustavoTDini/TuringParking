@@ -14,13 +14,13 @@ data class Stop (
     val parkingId: Int,
 
     @ColumnInfo(name = "user_id")
-    val userId: Int,
+    val userId: String,
 
     @ColumnInfo(name = "date_time")
     val dateTime: String,
 )
 {
     constructor(parkingId: Int,
-                userId: Int,
+                userId: String,
                 dateTime: String) : this(0,parkingId, userId, dateTime)
 }

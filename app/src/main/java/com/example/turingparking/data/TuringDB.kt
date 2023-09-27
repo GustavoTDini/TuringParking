@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-@Database(entities = [User::class, Stop::class, Parking::class], version = 2)
+@Database(entities = [User::class, Stop::class, Parking::class], version = 3)
 abstract class TuringDB: RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun parkingDao(): ParkingDao

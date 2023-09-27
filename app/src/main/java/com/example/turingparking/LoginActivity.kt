@@ -95,6 +95,7 @@ class LoginActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success")
                     val user = auth.currentUser
+                    Log.d(TAG, "currentUser: $user")
                     executeRecatchaTest()
                 } else {
                     // If sign in fails, display a message to the user.
