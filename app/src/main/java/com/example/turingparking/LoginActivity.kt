@@ -71,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initializeRecaptchaClient() {
-        val apiKey = {BuildConfig.RECAPTCHA_KEY}
+        val apiKey = BuildConfig.RECAPTCHA_KEY
         lifecycleScope.launch {
             Recaptcha.getClient(application, apiKey.toString())
                 .onSuccess { client ->
@@ -79,8 +79,8 @@ class LoginActivity : AppCompatActivity() {
                     recaptchaClient = client
                 }
                 .onFailure { exception ->
-                    Log.d("reCAPTCHA", "Failed to initialize reCAPTCHA")
-                    //returnToStart()
+                    Log.d("reCAPTCHA", "Failed to initialize reCAPTCHA $exception")
+                    returnToStart()
                 }
         }
     }
@@ -101,7 +101,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
                     Toast.makeText(
                         baseContext,
-                        "Authentication failed.",
+                        "Falha na autenticação!",
                         Toast.LENGTH_SHORT,
                     ).show()
                     returnToStart()
@@ -119,7 +119,7 @@ class LoginActivity : AppCompatActivity() {
                     goToMain()
                 }
                 .onFailure { e ->
-                    Log.d("reCAPTCHA", "Failed to initialize reCAPTCHA $e")
+                    Log.d("reCAPTCHA", "Falha no reCAPTCHA $e")
                     returnToStart()
                 }
         }

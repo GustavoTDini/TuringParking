@@ -11,18 +11,20 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.example.turingparking.network.HttpRequestHelpers
+import com.example.turingparking.network.MailHelpers
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlin.properties.Delegates
 
 class RegisterActivity : AppCompatActivity() {
 
     var code = ""
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private var createCodeTimeStamp by Delegates.notNull<Long>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,25 +40,40 @@ class RegisterActivity : AppCompatActivity() {
         val registerLayout = findViewById<LinearLayout>(R.id.registerLayout)
         val confirmLayout = findViewById<LinearLayout>(R.id.confirmLayout)
         val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+        val usersRef = db.collection("users")
+        var exists = false
 
         val registerButton = findViewById<Button>(R.id.registerBtn)
-        registerButton.setOnClickListener{
-            createCode()
-            HttpRequestHelpers.postDataUsingVolley(loginEditText.editableText.toString(), code, this)
+        registerButton.setOnClickListener {
+            val login = loginEditText.editableText
+            val password = passwordEditText.editableText
+            val confirmPassword = passwordConfirmEditText.editableText
+            usersRef.whereEqualTo("email", login.toString()).get()
+                .addOnSuccessListener { documents ->
+                    exists = !documents.isEmpty
+                    Log.w(TAG, "Query Finished $exists")
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                }
 
-//            if (loginEditText.text.isEmpty() ||
-//                passwordEditText.text.isEmpty()||
-//                passwordConfirmEditText.text.isEmpty() ){
-//                Toast.makeText(this@RegisterActivity, "Por Favor preencha todos os campos", Toast.LENGTH_SHORT).show()
-//            } else if (passwordEditText.editableText.toString() != passwordConfirmEditText.editableText.toString()){
-//                Toast.makeText(this@RegisterActivity, "As senhas não conferem", Toast.LENGTH_SHORT).show()
-//            }else if (!loginEditText.editableText.matches(emailRegex.toRegex())) {
-//                Toast.makeText(this@RegisterActivity, "Por Favor coloque um e-mail válido", Toast.LENGTH_SHORT).show()
-//            } else if (isPasswordValid(passwordEditText.editableText.toString())) {
-//
-//                //saveUser(loginEditText.editableText.toString(), passwordEditText.editableText.toString())
-//            }
-        }
+            if (login.isEmpty() || password.isEmpty()|| confirmPassword.isEmpty() ){
+                Toast.makeText(this@RegisterActivity, "Por Favor preencha todos os campos", Toast.LENGTH_SHORT).show()
+            } else if (password.toString() != confirmPassword.toString()){
+                Toast.makeText(this@RegisterActivity, "As senhas não conferem", Toast.LENGTH_SHORT).show()
+            }else if (!login.matches(emailRegex.toRegex())) {
+                Toast.makeText(this@RegisterActivity, "Por Favor coloque um e-mail válido", Toast.LENGTH_SHORT).show()
+            } else if (exists) {
+                Toast.makeText(this@RegisterActivity, "Usuário com email já existente!", Toast.LENGTH_SHORT).show()
+            } else if (isPasswordValid(passwordEditText.editableText.toString())) {
+                createCode()
+                createCodeTimeStamp = System.currentTimeMillis()
+                MailHelpers.postMailUsingVolley(loginEditText.editableText.toString(), code, this)
+                confirmLayout.visibility = View.VISIBLE
+                registerLayout.visibility = View.GONE
+            }
+    }
+
 
         val returnButton = findViewById<Button>(R.id.returnBtn)
         returnButton.setOnClickListener{
@@ -66,7 +83,7 @@ class RegisterActivity : AppCompatActivity() {
 
         val checkButton = findViewById<Button>(R.id.checkCodeBtn)
         checkButton.setOnClickListener{
-            if (confirmCodeEditText.editableText.toString() == code){
+            if (confirmCodeEditText.editableText.toString() == code && System.currentTimeMillis() <= createCodeTimeStamp + fiveMin){
                 saveUser(loginEditText.editableText.toString(), passwordEditText.editableText.toString())
             } else{
                 Toast.makeText(this@RegisterActivity, "Código invalido", Toast.LENGTH_SHORT).show()
@@ -75,7 +92,9 @@ class RegisterActivity : AppCompatActivity() {
 
         val resendButton = findViewById<Button>(R.id.resendBtn)
         resendButton.setOnClickListener{
-            //sendEmailCode(loginEditText.editableText.toString())
+            createCode()
+            createCodeTimeStamp = System.currentTimeMillis()
+            MailHelpers.postMailUsingVolley(loginEditText.editableText.toString(), code, this)
         }
     }
 
@@ -86,13 +105,25 @@ class RegisterActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
                     val user = auth.currentUser
+                    val uId = user?.uid
+                    if (uId != null) {
+                        val dbUser = hashMapOf(
+                            "nome" to "",
+                            "email" to login,
+                            "userId" to uId,
+                        )
+                        db.collection("users").document(uId)
+                            .set(dbUser)
+                            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
+                            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+                    }
                     openLoginIntent()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
                     Toast.makeText(
                         baseContext,
-                        "Authentication failed.",
+                        "Falha na autenticação",
                         Toast.LENGTH_SHORT,
                     ).show()
                     reload()
@@ -142,8 +173,8 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "EmailPassword"
+        private const val TAG = "RegisterActivity"
+        private const val fiveMin = 300000
     }
-
 
 }
