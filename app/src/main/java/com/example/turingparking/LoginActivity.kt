@@ -66,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            goToMain()
+            goToSelect()
         }
     }
 
@@ -116,8 +116,7 @@ class LoginActivity : AppCompatActivity() {
                 .onSuccess { token->
                     Toast.makeText(baseContext, "Usuário verificado pelo reCAPTCHA", Toast.LENGTH_SHORT).show()
                     Log.d("reCAPTCHA", token)
-
-                    goToMain()
+                    goToSelect()
                 }
                 .onFailure { e ->
                     Log.d("reCAPTCHA", "Falha no reCAPTCHA $e")
@@ -126,8 +125,8 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun goToMain() {
-        val intent = Intent(this, MainActivity::class.java)
+    private fun goToSelect() {
+        val intent = Intent(this, SelectUserTypeActivity::class.java)
         startActivity(intent)
     }
 

@@ -27,23 +27,6 @@ class ExitFragment : Fragment() {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
     }
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        // Inflate the layout for this fragment
-//        val fragmentView = inflater.inflate(R.layout.fragment_exit, container, false)
-//        Log.d("ExitFrag", fragmentView.toString())
-//        val exitButton = fragmentView.findViewById<Button>(R.id.exit_button)
-//        Log.d("ExitFrag", exitButton.toString())
-//        fragmentView.setOnClickListener{
-//            Log.d("ExitFrag", "Teste_exit")
-//            auth.signOut()
-//            val intent = Intent(this.requireContext(), StartActivity::class.java)
-//            startActivity(intent)
-//        }
-//        return inflater.inflate(R.layout.fragment_exit, container, false)
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,5 +44,4 @@ class ExitFragment : Fragment() {
         })
         return fragmentView
     }
-
 }

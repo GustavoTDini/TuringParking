@@ -7,19 +7,21 @@
 
     <fragment
         android:id="@+id/nav_map"
-        android:name="com.example.turingparking.fragments.MapsFragment"
+        android:name="com.example.turingparking.user_fragments.MapsFragment"
         android:label="@string/menu_map"
         tools:layout="@layout/fragment_maps" />
 
+
+
     <fragment
         android:id="@+id/nav_indique"
-        android:name="com.example.turingparking.fragments.PromoFragment"
+        android:name="com.example.turingparking.user_fragments.PromoFragment"
         android:label="@string/menu_indique"
         tools:layout="@layout/fragment_promo" />
 
     <fragment
         android:id="@+id/nav_historico"
-        android:name="com.example.turingparking.fragments.HistoryFragment"
+        android:name="com.example.turingparking.user_fragments.StopsHistoryFragment"
         android:label="@string/menu_history"
         tools:layout="@layout/fragment_history" />
 
@@ -27,12 +29,6 @@
         android:id="@+id/nav_about"
         android:name="com.example.turingparking.fragments.AboutFragment"
         android:label="@string/menu_about"
-        tools:layout="@layout/fragment_about" />
-
-    <fragment
-        android:id="@+id/nav_add"
-        android:name="com.example.turingparking.fragments.AboutFragment"
-        android:label="@string/menu_add"
         tools:layout="@layout/fragment_about" />
 
     <fragment

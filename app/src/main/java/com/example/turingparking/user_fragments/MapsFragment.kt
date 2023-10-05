@@ -1,18 +1,17 @@
-package com.example.turingparking.fragments
+package com.example.turingparking.user_fragments
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.example.turingparking.MyApplication
-import com.example.turingparking.ParkingViewActivity
 import com.example.turingparking.R
+import com.example.turingparking.user.ParkingViewActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -23,7 +22,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.launch
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMarkerClickListener {
@@ -32,9 +33,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private var mGoogleMap: GoogleMap? = null
     private var mCurrentPosition: LatLng = LatLng(-23.550244, -46.633908)
     private var mPositionMarker: Marker? = null
+    private lateinit var db: FirebaseFirestore
 
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
+        db = Firebase.firestore
         googleMap.setOnMarkerClickListener(this)
         setLocation()
         addMarkers()
@@ -92,19 +95,31 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun addMarkers() {
-        lifecycleScope.launch {
-            val parkings = MyApplication.database?.parkingDao()?.getAll()
-            if (parkings != null) {
-                for (park in parkings){
-                    val position = LatLng(park.latitude, park.longitude)
-                    mGoogleMap?.addMarker(MarkerOptions()
-                        .position(position)
-                        .title(park.parkingName)
-                        .snippet(park.parkingId.toString())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_turing_parking_map)))
+
+        db.collection("parkings")
+            .get()
+            .addOnSuccessListener { result ->
+                for (parking in result) {
+                    val latitude = parking.getDouble("latitude") as Double
+                    val longitude = parking.getDouble("longitude") as Double
+                    val name = parking.getString("name")
+                    val id = parking.getString("id")
+                    try{
+                        LatLng(latitude, longitude).let {
+                            MarkerOptions()
+                                .position(it)
+                                .title(name)
+                                .snippet(id)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_turing_parking_map))
+                        }.let { mGoogleMap?.addMarker(it)}  
+                    }catch (e: Error){
+                        Log.e(TAG, "addMarkers: $e", )
+                    } 
                 }
             }
-        }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "Error getting documents: ", exception)
+            }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -116,5 +131,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         } else{
             false
         }
+    }
+
+    companion object {
+        private const val TAG = "MapsFragment"
     }
 }

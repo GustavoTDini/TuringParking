@@ -1,4 +1,4 @@
-package com.example.turingparking.fragments
+package com.example.turingparking.user_fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.turingparking.MyApplication
 import com.example.turingparking.R
 import com.example.turingparking.StartActivity
-import com.example.turingparking.adapters.HistoryRecyclerViewAdapter
+import com.example.turingparking.adapters.StopsHistoryRecyclerViewAdapter
 import com.example.turingparking.data.Stop
 import com.example.turingparking.data.StopParking
 import com.google.firebase.auth.FirebaseAuth
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 /**
  * A fragment representing a list of Items.
  */
-class HistoryFragment : Fragment() {
+class StopsHistoryFragment : Fragment() {
 
     private var columnCount = 0
     private var userId:Int = 0
@@ -91,7 +91,7 @@ class HistoryFragment : Fragment() {
                         columnCount <= 1 -> LinearLayoutManager(context)
                         else -> GridLayoutManager(context, columnCount)
                     }
-                    adapter = HistoryRecyclerViewAdapter(showList.toList())
+                    adapter = StopsHistoryRecyclerViewAdapter(showList.toList())
                 }
             }
         }

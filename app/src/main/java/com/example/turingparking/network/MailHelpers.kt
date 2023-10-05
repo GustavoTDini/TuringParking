@@ -44,7 +44,6 @@ class MailHelpers {
         fun postMailUsingVolley(email: String, code: String, context: Context) {
             // on below line specifying the url at which we have to make a post request
             val apiKey = BuildConfig.BREVO_API_KEY
-            Log.d(TAG, "postMailUsingVolley: $apiKey")
             val url = "https://api.brevo.com/v3/smtp/email"
             // creating a new variable for our request queue
             val queue = Volley.newRequestQueue(context)

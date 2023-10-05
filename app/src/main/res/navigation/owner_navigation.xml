@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_about">
+
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="com.example.turingparking.fragments.AboutFragment"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about" />
+
+    <fragment
+        android:id="@+id/nav_add"
+        android:name="com.example.turingparking.owner_fragments.AddFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_add" >
+        <action
+            android:id="@+id/action_nav_add_to_nav_add_address"
+            app:destination="@id/nav_add_address" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_address"
+        android:name="com.example.turingparking.owner_fragments.AddAddressFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_add_address" >
+        <action
+            android:id="@+id/action_nav_add_address_to_nav_add_map"
+            app:destination="@id/nav_add_map" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_map"
+        android:name="com.example.turingparking.owner_fragments.AddMapFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_add_map" >
+        <action
+            android:id="@+id/action_nav_add_map_to_nav_add_photo"
+            app:destination="@id/nav_add_photo" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_photo"
+        android:name="com.example.turingparking.owner_fragments.AddPhotoFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_add_photo" >
+        <action
+            android:id="@+id/action_nav_add_photo_to_nav_add_hours"
+            app:destination="@id/nav_add_hours" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_hours"
+        android:name="com.example.turingparking.owner_fragments.AddHoursFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_add_hours" >
+        <action
+            android:id="@+id/action_nav_add_hours_to_nav_add_finance"
+            app:destination="@id/nav_add_finance" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_finance"
+        android:name="com.example.turingparking.owner_fragments.AddFinanceFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_add_finance" >
+        <action
+            android:id="@+id/action_nav_add_finance_to_nav_add_finish"
+            app:destination="@id/nav_add_finish" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_finish"
+        android:name="com.example.turingparking.owner_fragments.AddFinishFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_add_finish" />
+
+    <fragment
+        android:id="@+id/nav_exit"
+        android:name="com.example.turingparking.fragments.ExitFragment"
+        android:label="@string/menu_exit"
+        tools:layout="@layout/fragment_exit" />
+</navigation>

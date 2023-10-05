@@ -1,4 +1,4 @@
-package com.example.turingparking.fragments
+package com.example.turingparking.user_fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,11 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.turingparking.R
 import com.example.turingparking.network.MailHelpers
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.

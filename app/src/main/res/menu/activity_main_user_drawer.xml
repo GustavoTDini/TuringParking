@@ -21,10 +21,6 @@
             android:icon="@drawable/ic_info_24"
             android:title="@string/menu_about" />
         <item
-            android:id="@+id/nav_add"
-            android:icon="@drawable/add_location_24"
-            android:title="@string/menu_add" />
-        <item
             android:id="@+id/nav_exit"
             android:icon="@drawable/exit_to_app_24"
             android:title="@string/menu_exit" />

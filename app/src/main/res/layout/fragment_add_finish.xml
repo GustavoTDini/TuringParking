@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".owner_fragments.AddFinishFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingHorizontal="8dp">
+
+            <LinearLayout
+                android:id="@+id/AddIconLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary_container"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Confirme seus Dados"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Dados do Estacionamento"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Nome:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_name"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="Nome"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="CNPJ:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_cnpj"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="cnpj"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Vagas:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_spots"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="vagas"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Seguro:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_insurance"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="Com seguro"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Endereço"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="CEP:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_cep"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="CEP"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Endereço:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_address"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="Endereço"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Número:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_address_number"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="Número"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Complemento:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_address_more"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="complemento"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Bairro:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_address_district"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="bairro"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Cidade:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_address_city"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="cidade"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Estado:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_address_state"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="estado"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Mapa"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/verify_check_map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:context=".owner_fragments.AddMapFragment"/>
+
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Foto"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <ImageView
+                    android:id="@+id/verify_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:src="@drawable/parking_image_placeholder"
+                    android:scaleType="centerCrop" />
+
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Horários"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/verify_24_hours_time_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="24 Horas:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_24_hours_time"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="Sim"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/verify_open_time_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Abertura:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_open_time"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="07:00"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/verify_close_time_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Fechamento:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_close_time"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="18:00"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Tabela de preços"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/verify_15_min_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:visibility="gone"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Preço por 15 minutos:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_15_min"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="R$5,00"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/verify_4_hours_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:visibility="gone"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Preço primeiras 4 horas:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_4_hours"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="R$20,00"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/verify_1_hour_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:visibility="gone"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Preço por hora:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_1_hour"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="R$10,00"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/verify_24_hours_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:visibility="gone"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Preço por 24 horas:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_24_hours"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="R$100,00"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:layout_width="match_parent"
+                android:layout_height="4dp"/>
+
+            <LinearLayout
+                android:id="@+id/verify_night_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:visibility="gone"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:text="Preço do pernoite:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/verify_night"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="18sp"
+                    android:textAlignment="textEnd"
+                    android:text="R$50,00"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/back_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="Voltar"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/next_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="Salvar"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

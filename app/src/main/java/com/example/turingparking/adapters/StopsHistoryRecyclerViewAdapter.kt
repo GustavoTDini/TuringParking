@@ -12,9 +12,9 @@ import java.util.Currency
 /**
  * [RecyclerView.Adapter] that can display a [PlaceholderItem].
  */
-class HistoryRecyclerViewAdapter(
+class StopsHistoryRecyclerViewAdapter(
     private val values: List<StopParking>
-) : RecyclerView.Adapter<HistoryRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<StopsHistoryRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
