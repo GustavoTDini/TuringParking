@@ -70,7 +70,7 @@ abstract class TuringDB: RoomDatabase() {
                 if (parkings.isEmpty()){
                     for (i in 1..200){
                         val nome = "Parking$i"
-                        val url = "res/drawable/estacionamento.jpg"
+                        val url = "res/drawable/parking_image_placeholder.png"
                         val vagas = Random.nextInt(5,10)
                         val ocupadas = Random.nextInt(0, 4)
                         val lat = Random.nextDouble(-28.86863067551838,-22.25000039229986)

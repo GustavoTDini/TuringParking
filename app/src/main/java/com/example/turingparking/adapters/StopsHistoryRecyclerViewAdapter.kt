@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.turingparking.data.StopParking
-import com.example.turingparking.databinding.HistoryItemBinding
+import com.example.turingparking.databinding.ListItemHistoryBinding
 import java.text.NumberFormat
 import java.util.Currency
 
@@ -19,7 +19,7 @@ class StopsHistoryRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return ViewHolder(
-            HistoryItemBinding.inflate(
+            ListItemHistoryBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -39,7 +39,7 @@ class StopsHistoryRecyclerViewAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(binding: HistoryItemBinding) :
+    inner class ViewHolder(binding: ListItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val datetime: TextView = binding.dateTime
         val nome: TextView = binding.parkingName

@@ -47,10 +47,10 @@ class MainUserActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_map,
-                R.id.nav_indique,
-                R.id.nav_historico,
+                R.id.nav_cars_list,
+                R.id.nav_promo,
+                R.id.nav_stops,
                 R.id.nav_about,
-                R.id.nav_add,
                 R.id.nav_exit
             ), drawerLayout
         )

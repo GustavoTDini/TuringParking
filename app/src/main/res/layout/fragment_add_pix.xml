@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".user_fragments.AddPixFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+            <LinearLayout
+                android:id="@+id/AddIconLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@color/primary_container"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="@string/icone_do_app"
+                    android:src="@drawable/logo_turing_parking" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Selecione um valor para o Pix"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:text="Valor" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/pix_20_button"
+                        android:backgroundTint="@color/primary"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:text="R$ 20,00" />
+
+                    <Button
+                        android:id="@+id/pix_50_button"
+                        android:backgroundTint="@color/tertiary"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:text="R$ 50,00" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/pix_100_button"
+                        android:backgroundTint="@color/tertiary"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:text="R$ 100,00" />
+
+                    <Button
+                        android:id="@+id/pix_200_button"
+                        android:backgroundTint="@color/tertiary"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:text="R$ 200,00" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/generate_qrcode_buttom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Gerar QR Code" />
+
+
+                <LinearLayout
+                    android:id="@+id/qr_code_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/qr_code_image_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:src="@drawable/pix_icon_lg" />
+
+                    <Button
+                        android:id="@+id/pay_pix_buttom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Pagar (Apenas em Dev)" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</FrameLayout>

@@ -40,7 +40,7 @@
             <ImageButton
                 android:id="@+id/cancel_button"
                 android:background="@color/transparent"
-                android:src="@drawable/ic_cancel_48"
+                android:src="@drawable/ic_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="4dp"
@@ -49,7 +49,7 @@
             <ImageButton
                 android:id="@+id/photo_button"
                 android:background="@color/transparent"
-                android:src="@drawable/ic_image_search_48"
+                android:src="@drawable/ic_image_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="4dp"
@@ -58,7 +58,7 @@
             <ImageButton
                 android:id="@+id/camera_button"
                 android:background="@color/transparent"
-                android:src="@drawable/ic_photo_48"
+                android:src="@drawable/ic_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="4dp"

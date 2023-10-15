@@ -5,16 +5,24 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_park"
+            android:icon="@drawable/ic_local_parking"
+            android:title="@string/menu_park" />
+        <item
             android:id="@+id/nav_add"
-            android:icon="@drawable/add_location_24"
+            android:icon="@drawable/ic_add_location"
             android:title="@string/menu_add" />
         <item
+            android:id="@+id/nav_finance"
+            android:icon="@drawable/ic_money"
+            android:title="@string/menu_finance" />
+        <item
             android:id="@+id/nav_about"
-            android:icon="@drawable/ic_info_24"
+            android:icon="@drawable/ic_info"
             android:title="@string/menu_about" />
         <item
             android:id="@+id/nav_exit"
-            android:icon="@drawable/exit_to_app_24"
+            android:icon="@drawable/ic_logout"
             android:title="@string/menu_exit" />
     </group>
 </menu>

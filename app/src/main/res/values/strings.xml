@@ -30,11 +30,17 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_map">Encontre uma Vaga</string>
-    <string name="menu_indique">Indique e Ganhe</string>
+    <string name="menu_promo">Indique e Ganhe</string>
     <string name="menu_history">Historico de Vagas</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_about">Sobre nós</string>
+    <string name="menu_add">Adicione seu Estacionamento</string>
+    <string name="menu_exit">Sair do App</string>
+    <string name="menu_cars">Meus Carros</string>
+    <string name="menu_wallet">Carteira</string>
+    <string name="menu_park">Seus Estacionamentos</string>
+    <string name="menu_finance">Relatório financeiro</string>
+
+
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
@@ -56,24 +62,25 @@
     <string name="prompt_password_confirm">Confirme sua Senha</string>
     <string name="register_btn">Registrar</string>
 
-    <!-- recapcha labels -->
-    <string name="recaptcha0">dmw8n</string>
-    <string name="recaptcha1">pdw38</string>
-    <string name="recaptcha2">2en7g</string>
-    <string name="recaptcha3">8fexn</string>
-    <string name="recaptcha4">nn4wx</string>
-    <string name="recaptcha5">w46ep</string>
-    <string name="recaptcha6">3den6</string>
-    <string name="recaptcha7">3n3cf</string>
-    <string name="recaptcha8">56ncx</string>
-    <string name="recaptcha9">gp22x</string>
-    <string name="recaptcha10">xymfn</string>
-    <string name="recaptcha11">325fb</string>
-    <string name="recaptcha12">7dgc2</string>
-    <string name="recaptcha13">ggd7m</string>
-    <string name="recaptcha14">dznbn</string>
-    <string name="recaptcha15">8db67</string>
-    <string name="menu_add">Adicione seu Estacionamento</string>
-    <string name="menu_exit">Sair do App</string>
+    <string-array name="types_array">
+        <item>Carro</item>
+        <item>SUV</item>
+        <item>Picape</item>
+    </string-array>
+    <string-array name="colors_array">
+        <item>Preto</item>
+        <item>Branco</item>
+        <item>Prata</item>
+        <item>Cinza</item>
+        <item>Vermelho</item>
+        <item>Azul</item>
+        <item>Verde</item>
+        <item>Amarelo</item>
+        <item>Marrom</item>
+        <item>Outras</item>
+    </string-array>
+
+    <string name="transCredit">transaction credit</string>
+    <string name="transSpent">transaction debit</string>
 
 </resources>

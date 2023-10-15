@@ -42,9 +42,6 @@ class LoginActivity : AppCompatActivity() {
         val loginEditText = findViewById<EditText>(R.id.login)
         val passwordEditText = findViewById<EditText>(R.id.password)
         loginLayout = findViewById(R.id.loginLayout)
-        recaptchaLayout = findViewById(R.id.recaptchaLayout)
-        recaptchaImage = findViewById(R.id.recapcthaImage)
-        recapctchaEditText = findViewById(R.id.recapcthaInput)
 
         val loginButton = findViewById<Button>(R.id.loginBtn)
         loginButton.setOnClickListener{

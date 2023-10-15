@@ -41,14 +41,14 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
+        android:id="@+id/history_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context=".user_fragments.StopsHistoryFragment"
-        tools:listitem="@layout/history_item" />
+        tools:listitem="@layout/list_item_history" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

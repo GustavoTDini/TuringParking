@@ -13,30 +13,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="16dp"
-            android:paddingHorizontal="8dp">
+            android:paddingBottom="16dp">
 
-            <LinearLayout
-                android:id="@+id/AddIconLayout"
+
+        <FrameLayout
+            android:id="@+id/AddIconLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_container"
+            android:layout_marginBottom="16dp">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primary_container"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Confirme seus Dados"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textAlignment="center"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Confirme seus Dados"
-                    android:textColor="@color/white"
-                    android:textSize="24sp"
-                    android:textAlignment="center"
-                    android:textStyle="bold" />
+        </FrameLayout>
 
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:layout_marginHorizontal="16dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -692,10 +697,12 @@
                     android:layout_weight="1"/>
 
             </LinearLayout>
+        </LinearLayout>
 
 
 
         </LinearLayout>
+
     </ScrollView>
 
 </FrameLayout>
