@@ -36,7 +36,7 @@ class AddCarFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private var handicap = false
-    private var eletric = false
+    private var electric = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,10 +80,10 @@ class AddCarFragment : Fragment(), AdapterView.OnItemSelectedListener {
             handicap = checked
         }
 
-        val eletricSwitch = fragmentView.findViewById<View>(R.id.switch_eletric) as SwitchCompat
-        eletricSwitch.isChecked = eletric
-        eletricSwitch.setOnCheckedChangeListener { _, checked ->
-            eletric = checked
+        val electricSwitch = fragmentView.findViewById<View>(R.id.switch_electric) as SwitchCompat
+        electricSwitch.isChecked = electric
+        electricSwitch.setOnCheckedChangeListener { _, checked ->
+            electric = checked
         }
 
         val addButton = fragmentView.findViewById<View>(R.id.add_car_button) as Button
@@ -103,7 +103,7 @@ class AddCarFragment : Fragment(), AdapterView.OnItemSelectedListener {
             car.type = selectedType
             car.nick = nick
             car.plate = plate
-            car.eletric = eletric
+            car.electric = electric
             car.handicap = handicap
             val id = UUID.randomUUID().toString()
             car.id = id

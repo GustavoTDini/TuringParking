@@ -116,17 +116,15 @@ class WalletFragment : Fragment() {
                     list.add(transaction)
                 }
                 val columnCount = list.size
-                listView.adapter = TransactionListRecyclerViewAdapter(list)
-//                if (columnCount == 0) {
-//                    emptyView.visibility = View.VISIBLE
-//                    listView.visibility = View.GONE
-//                } else {
-//                    Log.d(TAG, "createTransactionList: Visible")
-//                    emptyView.visibility = View.GONE
-//                    // Set the adapter
-//                    listView.visibility = View.VISIBLE
-//
-//                }
+
+                if (columnCount == 0) {
+                    emptyView.visibility = View.VISIBLE
+                    listView.visibility = View.GONE
+                } else {
+                    emptyView.visibility = View.GONE
+                    listView.adapter = TransactionListRecyclerViewAdapter(list)
+                    listView.visibility = View.VISIBLE
+                }
 
             }
             .addOnFailureListener { exception ->

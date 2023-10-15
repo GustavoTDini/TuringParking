@@ -50,7 +50,7 @@
         android:id="@+id/nav_stops"
         android:name="com.example.turingparking.user_fragments.StopsHistoryFragment"
         android:label="@string/menu_history"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history_list" />
 
     <fragment
         android:id="@+id/nav_about"

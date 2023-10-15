@@ -88,12 +88,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/eletric_icon_image_view"
+        android:id="@+id/electric_icon_image_view"
         android:layout_width="24dp"
         android:layout_height="24dp"
         app:layout_constraintStart_toStartOf="@+id/car_icon_image_view"
         app:layout_constraintTop_toTopOf="@+id/car_icon_image_view"
-        app:srcCompat="@drawable/eletric_icon" />
+        app:srcCompat="@drawable/electric_icon" />
 
     <ImageView
         android:id="@+id/handicap_icon_image_view"

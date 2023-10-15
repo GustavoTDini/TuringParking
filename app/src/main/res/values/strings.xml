@@ -82,5 +82,7 @@
 
     <string name="transCredit">transaction credit</string>
     <string name="transSpent">transaction debit</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -48,7 +48,7 @@ class AddViewModel : ViewModel() {
         newParking.twentyFour = twentyFour
     }
 
-    fun addFinance(priceFor15: Double, priceForHour: Double, priceFor4Hour: Double, priceFor24Hour: Double, priceForNight: Double,insured: Boolean, spots: Int) {
+    fun addFinance(priceFor15: Double, priceForHour: Double, priceFor4Hour: Double, priceFor24Hour: Double, priceForNight: Double, insured: Boolean, spots: Int, electricSpots: Int, handicapSpots: Int) {
         newParking.priceFor15 = priceFor15
         newParking.priceForHour = priceForHour
         newParking.priceFor4Hour = priceFor4Hour
@@ -56,6 +56,8 @@ class AddViewModel : ViewModel() {
         newParking.priceForNight = priceForNight
         newParking.insured = insured
         newParking.spots = spots
+        newParking.electricSpots = electricSpots
+        newParking.handicapSpots = handicapSpots
     }
 
     fun getCoordinates(): LatLng {

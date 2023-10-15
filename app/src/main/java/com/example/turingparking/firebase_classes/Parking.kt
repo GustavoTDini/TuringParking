@@ -26,11 +26,11 @@ class Parking(var userId: String) {
     var priceFor24Hour: Double = 0.0
     var priceForNight: Double = 0.0
     var spots: Int = 0
-    var eletricSpots: Int = 0
+    var electricSpots: Int = 0
     var handicapSpots: Int = 0
 
     override fun toString(): String {
-        return "Parking(userId='$userId', id='$id', imageUri='$imageUri', name='$name', cnpj='$cnpj', cep='$cep', addressStreet='$addressStreet', addressNumber='$addressNumber', addressComplement='$addressComplement', addressDistrict='$addressDistrict', addressCity='$addressCity', addressState='$addressState', latitude=$latitude, longitude=$longitude, openHour='$openHour', closeHour='$closeHour', twentyFour=$twentyFour, insured=$insured, priceFor15=$priceFor15, priceForHour=$priceForHour, priceFor4Hour=$priceFor4Hour, priceFor24Hour=$priceFor24Hour, priceForNight=$priceForNight, spots=$spots, eletricSpots=$eletricSpots, handicapSpots=$handicapSpots)"
+        return "Parking(userId='$userId', id='$id', imageUri='$imageUri', name='$name', cnpj='$cnpj', cep='$cep', addressStreet='$addressStreet', addressNumber='$addressNumber', addressComplement='$addressComplement', addressDistrict='$addressDistrict', addressCity='$addressCity', addressState='$addressState', latitude=$latitude, longitude=$longitude, openHour='$openHour', closeHour='$closeHour', twentyFour=$twentyFour, insured=$insured, priceFor15=$priceFor15, priceForHour=$priceForHour, priceFor4Hour=$priceFor4Hour, priceFor24Hour=$priceFor24Hour, priceForNight=$priceForNight, spots=$spots, electricSpots=$electricSpots, handicapSpots=$handicapSpots)"
     }
 
 

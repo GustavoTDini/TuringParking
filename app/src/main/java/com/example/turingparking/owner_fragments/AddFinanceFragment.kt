@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import com.example.turingparking.R
 import com.example.turingparking.firebase_classes.Parking
 import kotlin.math.floor
+import kotlin.math.round
 
 /**
  * A simple [Fragment] subclass.
@@ -29,6 +30,8 @@ class AddFinanceFragment : Fragment() {
     private var price24HoursDouble: Double = 0.0
     private var priceNightDouble: Double = 0.0
     private var spots = 1
+    private var electricSpots = 0
+    private var handicapSpots = 0
     private var insured = false
     private lateinit var parking: Parking
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -290,6 +293,26 @@ class AddFinanceFragment : Fragment() {
         }
 
         // Spot Picker Functions
+        val electricSpotPicker = fragmentView.findViewById<View>(R.id.electric_spots_picker) as NumberPicker
+        electricSpotPicker.minValue = 0
+        electricSpotPicker.maxValue = 999
+        electricSpotPicker.value = electricSpots
+        electricSpotPicker.wrapSelectorWheel = true
+        electricSpotPicker.setOnValueChangedListener { _, _, newVal: Int ->
+            electricSpots = newVal
+        }
+
+        // Spot Picker Functions
+        val handicapSpotPicker = fragmentView.findViewById<View>(R.id.handicap_spots_picker) as NumberPicker
+        handicapSpotPicker.minValue = spots/20
+        handicapSpotPicker.maxValue = 999
+        handicapSpotPicker.value = handicapSpots
+        handicapSpotPicker.wrapSelectorWheel = true
+        handicapSpotPicker.setOnValueChangedListener { _, _, newVal: Int ->
+            handicapSpots = newVal
+        }
+
+        // Spot Picker Functions
         val spotPicker = fragmentView.findViewById<View>(R.id.spots_picker) as NumberPicker
         spotPicker.minValue = 1
         spotPicker.maxValue = 999
@@ -297,11 +320,19 @@ class AddFinanceFragment : Fragment() {
         spotPicker.wrapSelectorWheel = true
         spotPicker.setOnValueChangedListener { _, _, newVal: Int ->
             spots = newVal
+            val minHandicapSpots = round((spots/20).toDouble()).toInt()
+            if (handicapSpots < minHandicapSpots){
+                handicapSpots = minHandicapSpots
+                handicapSpotPicker.value = handicapSpots
+            }
+            handicapSpotPicker.minValue = minHandicapSpots
         }
 
         val nextButton = fragmentView.findViewById<View>(R.id.next_button) as Button
         nextButton.setOnClickListener {
-            viewModel.addFinance(price15minDouble, price1HourDouble, price4HoursDouble, price24HoursDouble, priceNightDouble, insured, spots)
+
+
+            viewModel.addFinance(price15minDouble, price1HourDouble, price4HoursDouble, price24HoursDouble, priceNightDouble, insured, spots, electricSpots, handicapSpots)
             fragmentView.findNavController().navigate(R.id.nav_add_finish)
         }
         return fragmentView

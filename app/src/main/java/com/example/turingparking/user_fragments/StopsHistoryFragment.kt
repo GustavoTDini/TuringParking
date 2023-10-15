@@ -48,7 +48,7 @@ class StopsHistoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_history, container, false)
+        val view = inflater.inflate(R.layout.fragment_history_list, container, false)
         empty = view.findViewById(R.id.empty)
         list = view.findViewById(R.id.history_list)
         return view

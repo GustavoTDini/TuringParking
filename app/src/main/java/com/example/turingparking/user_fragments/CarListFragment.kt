@@ -57,7 +57,7 @@ class CarListFragment : Fragment() {
                         val carData = document.data
                         val car = Car(userid)
                         car.handicap = carData["handicap"] as Boolean
-                        car.eletric = carData["eletric"] as Boolean
+                        car.electric = carData["electric"] as Boolean
                         car.plate = carData["plate"] as String
                         car.nick = carData["nick"] as String
                         val type = carData["type"] as Long

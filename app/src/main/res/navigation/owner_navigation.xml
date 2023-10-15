@@ -3,7 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_about">
+    app:startDestination="@+id/nav_park">
+
+    <fragment
+        android:id="@+id/nav_park"
+        android:name="com.example.turingparking.owner_fragments.ParkingListFragment"
+        android:label="Meus Estacionamentos"
+        tools:layout="@layout/fragment_parking_list" />
+
+    <fragment
+        android:id="@+id/nav_spots"
+        android:name="com.example.turingparking.owner_fragments.SpotsListFragment"
+        android:label="Controle de Vagas"
+        tools:layout="@layout/fragment_spots_list" />
 
     <fragment
         android:id="@+id/nav_about"
