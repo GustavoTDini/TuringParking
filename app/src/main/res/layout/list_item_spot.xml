@@ -5,18 +5,45 @@
     android:layout_height="104dp"
     android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/spots_car_icon_image_view"
-        android:layout_width="100dp"
-        android:layout_height="56dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="8dp"
-        android:src="@drawable/blue_car"
+    <LinearLayout
+        android:id="@+id/spots_item_car_view"
         android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spot_status_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/spot_status_text_view"
+        android:layout_marginVertical="8dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/spots_car_icon_image_view"
+            android:layout_width="100dp"
+            android:layout_height="56dp"
+            android:src="@drawable/blue_car" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Placa: "
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        <TextView
+            android:id="@+id/spot_status_plate_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="GEL-7597"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+    </LinearLayout>
+
+
+
+
 
     <TextView
         android:id="@+id/spot_status_text_view"
@@ -51,24 +78,26 @@
 
     <ImageView
         android:id="@+id/spots_electric_icon_image_view"
+        android:visibility="gone"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
+
         app:srcCompat="@drawable/electric_icon" />
 
     <ImageView
         android:id="@+id/spots_handicap_icon_image_view"
+        android:visibility="gone"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/handicap_icon" />
 
 

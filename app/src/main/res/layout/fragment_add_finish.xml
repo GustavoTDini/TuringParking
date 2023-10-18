@@ -15,7 +15,6 @@
             android:orientation="vertical"
             android:paddingBottom="16dp">
 
-
         <FrameLayout
             android:id="@+id/AddIconLayout"
             android:layout_width="match_parent"
@@ -549,35 +548,6 @@
                     android:textSize="18sp"
                     android:textAlignment="textEnd"
                     android:text="R$5,00"
-                    android:layout_weight="2"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/verify_4_hours_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3"
-                android:visibility="gone"
-                android:layout_marginTop="16dp">
-
-                <TextView
-                    android:layout_width="1dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:textSize="18sp"
-                    android:text="Preço primeiras 4 horas:"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:id="@+id/verify_4_hours"
-                    android:layout_width="1dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:textSize="18sp"
-                    android:textAlignment="textEnd"
-                    android:text="R$20,00"
                     android:layout_weight="2"/>
 
             </LinearLayout>

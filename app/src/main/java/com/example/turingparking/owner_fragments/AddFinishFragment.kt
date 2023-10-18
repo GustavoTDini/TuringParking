@@ -30,11 +30,6 @@ import java.io.ByteArrayOutputStream
 import java.text.NumberFormat
 import java.util.Currency
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AddFinishFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddFinishFragment : Fragment(), OnMapReadyCallback {
 
     private val viewModel: AddViewModel by activityViewModels()
@@ -127,8 +122,6 @@ class AddFinishFragment : Fragment(), OnMapReadyCallback {
         val price15MinTextView = fragmentView.findViewById<TextView>(R.id.verify_15_min)
         val view1Hour = fragmentView.findViewById<View>(R.id.verify_1_hour_view)
         val price1HourTextView = fragmentView.findViewById<TextView>(R.id.verify_1_hour)
-        val view4Hours = fragmentView.findViewById<View>(R.id.verify_4_hours_view)
-        val price4HoursTextView = fragmentView.findViewById<TextView>(R.id.verify_4_hours)
         val view24Hours = fragmentView.findViewById<View>(R.id.verify_24_hours_view)
         val price24HoursTextView = fragmentView.findViewById<TextView>(R.id.verify_24_hours)
         val viewNight = fragmentView.findViewById<View>(R.id.verify_night_view)
@@ -142,11 +135,6 @@ class AddFinishFragment : Fragment(), OnMapReadyCallback {
         if(parking.priceForHour >= 0){
             view1Hour.visibility = View.VISIBLE
             price1HourTextView.text = format.format(parking.priceForHour)
-        }
-
-        if(parking.priceFor4Hour >= 0){
-            view4Hours.visibility = View.VISIBLE
-            price4HoursTextView.text = format.format(parking.priceFor4Hour)
         }
 
         if(parking.priceFor24Hour >= 0){

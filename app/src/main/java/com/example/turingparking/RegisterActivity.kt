@@ -40,7 +40,6 @@ class RegisterActivity : AppCompatActivity() {
         val registerLayout = findViewById<LinearLayout>(R.id.registerLayout)
         val confirmLayout = findViewById<LinearLayout>(R.id.confirmLayout)
         val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
-        val usersRef = db.collection("users")
         var exists = false
 
         val registerButton = findViewById<Button>(R.id.registerBtn)
@@ -48,7 +47,7 @@ class RegisterActivity : AppCompatActivity() {
             val login = loginEditText.editableText
             val password = passwordEditText.editableText
             val confirmPassword = passwordConfirmEditText.editableText
-            usersRef.whereEqualTo("email", login.toString()).get()
+            db.collection("users").whereEqualTo("email", login.toString()).get()
                 .addOnSuccessListener { documents ->
                     exists = !documents.isEmpty
                     Log.w(TAG, "Query Finished $exists")

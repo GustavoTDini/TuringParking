@@ -1,5 +1,6 @@
 package com.example.turingparking.user_fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -112,6 +113,13 @@ class AddCarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 .set(car)
                 .addOnSuccessListener {
                     Log.d(TAG, "DocumentSnapshot successfully written!")
+                    val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+                    if (sharedPref != null) {
+                        with (sharedPref.edit()) {
+                            putString("SELECTED_CAR", id)
+                            apply()
+                        }
+                    }
                     view.findNavController().navigate(R.id.nav_cars_list)
                 }
                 .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }

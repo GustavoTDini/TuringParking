@@ -1,5 +1,6 @@
 package com.example.turingparking
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,8 @@ import com.google.android.recaptcha.RecaptchaAction
 import com.google.android.recaptcha.RecaptchaClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
@@ -24,19 +27,20 @@ class LoginActivity : AppCompatActivity() {
 
     var recaptchaCode = ""
 
-
     var loginLayout: LinearLayout? = null
     var recaptchaLayout: LinearLayout? = null
     var recaptchaImage: ImageView? = null
     var recapctchaEditText: EditText? = null
     var user: User? = null
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
     private lateinit var recaptchaClient: RecaptchaClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = Firebase.auth
+        db = Firebase.firestore
         initializeRecaptchaClient()
 
         val loginEditText = findViewById<EditText>(R.id.login)
@@ -70,7 +74,7 @@ class LoginActivity : AppCompatActivity() {
     private fun initializeRecaptchaClient() {
         val apiKey = BuildConfig.RECAPTCHA_KEY
         lifecycleScope.launch {
-            Recaptcha.getClient(application, apiKey.toString())
+            Recaptcha.getClient(application, apiKey)
                 .onSuccess { client ->
                     Log.d("reCAPTCHA", "reCAPTCHA initialized")
                     recaptchaClient = client
@@ -112,6 +116,20 @@ class LoginActivity : AppCompatActivity() {
                 .execute(RecaptchaAction.LOGIN)
                 .onSuccess { token->
                     Toast.makeText(baseContext, "Usuário verificado pelo reCAPTCHA", Toast.LENGTH_SHORT).show()
+                    db.collection("userd")
+                        .document(auth.currentUser?.uid.toString())
+                        .get()
+                        .addOnSuccessListener {document ->
+                            val carId = document.data?.get("currentCar") as String
+                            val sharedPref = this@LoginActivity.getPreferences(Context.MODE_PRIVATE) ?: return@addOnSuccessListener
+                            with (sharedPref.edit()) {
+                                putString("SELECTED_CAR", carId)
+                                apply()
+                            }
+                        }
+                        .addOnFailureListener{ e ->
+                            Log.d("reCAPTCHA", "Falha no requisição Firebase $e")
+                        }
                     Log.d("reCAPTCHA", token)
                     goToSelect()
                 }

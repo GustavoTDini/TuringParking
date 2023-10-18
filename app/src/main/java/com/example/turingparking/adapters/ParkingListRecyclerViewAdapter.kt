@@ -16,7 +16,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 class ParkingListRecyclerViewAdapter(
-    private val values: List<ParkingList>, val parkingListClickInterface: ParkingListClickInterface)
+    private val values: List<ParkingList>, private val parkingListClickInterface: ParkingListClickInterface)
  : RecyclerView.Adapter<ParkingListRecyclerViewAdapter.ViewHolder>() {
 
     lateinit var context: Context

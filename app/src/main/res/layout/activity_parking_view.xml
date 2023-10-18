@@ -1,148 +1,473 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/primary_container"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primary_container">
 
-    <TextView
-        android:id="@+id/titleview"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="@color/primary"
-        android:padding="4dp"
-        android:text="Titulo"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="350dp"
-        android:layout_height="180dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/secondary_container"
-        android:padding="16dp"
-        android:translationZ="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleview">
-
-        <ImageView
-            android:id="@+id/parking_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:translationZ="24dp"
-            app:srcCompat="@drawable/parking_image_placeholder" />
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="350dp"
-        android:layout_height="150dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
-
-
-
-
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/priceLabel"
-                android:layout_width="wrap_content"
+                android:id="@+id/parking_details_name_text_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Preço:" />
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                tools:ignore="NestedWeights">
-
-            </View>
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Nome do estacionamento"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/priceTxt"
-                android:layout_width="wrap_content"
+                android:id="@+id/parking_details_address_text_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="R$ 10,00" />
+                android:padding="4dp"
+                android:layout_marginHorizontal="8dp"
+                android:text="Endereço"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:layout_margin="8dp"
+                android:background="@color/secondary_container"
+                android:padding="12dp"
+                android:translationZ="16dp">
+
+                <ImageView
+                    android:id="@+id/parking_details_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="60dp"
+                    android:translationZ="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/parking_image_placeholder" />
+
+                <LinearLayout
+                    android:id="@+id/parking_details_insurance_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:translationZ="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:srcCompat="@drawable/insured" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Com Seguro"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/parking_details_fav_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:elevation="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/empty_star"
+                    android:translationZ="32dp"
+                    app:layout_constraintStart_toStartOf="@+id/parking_details_image_view"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/parking_details_rating_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="8dp"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:text="Nota:"/>
+
+                <RatingBar
+                    android:id="@+id/parking_details_rating_bar"
+                    style="@android:style/Widget.DeviceDefault.Light.RatingBar.Indicator"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="false"
+                    android:max="10"
+                    android:numStars="5"
+                    android:progress="7"
+                    android:stepSize=".5" />
+
+                <TextView
+                    android:id="@+id/parking_details_evaluation_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    style="@style/TextAppearance.AppCompat.Small"
+                    android:text="Baseado em 10 avaliações"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/parking_details_new_parking_text_view"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:text="Estacionamento Novo"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Horário de Funcionamento"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/parking_details_open_hour_view"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Horário de Abertura:" />
+
+                <TextView
+                    android:id="@+id/parking_details_open_hour_text_view"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingHorizontal="4dp"
+                    android:text="08:00" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/parking_details_close_hour_view"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Horário de Fechamento:" />
+
+                <TextView
+                    android:id="@+id/parking_details_close_hour_text_view"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingHorizontal="4dp"
+                    android:text="16:00" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/parking_details_twenty_four_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:layout_marginHorizontal="8dp"
+                android:text="Aberto 24 horas"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Vagas Disponiveis"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_weight="1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/parking_icon"/>
+
+                <TextView
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Vagas Totais" />
+
+                <TextView
+                    android:id="@+id/parking_details_total_spots_text_view"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingHorizontal="4dp"
+                    android:text="4 de 10" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_weight="1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/handicap_icon"/>
+
+                <TextView
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Vagas Preferenciais" />
+
+                <TextView
+                    android:id="@+id/parking_details_handicap_spots_text_view"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingHorizontal="4dp"
+                    android:text="4 de 10" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_weight="1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/electric_icon"/>
+
+                <TextView
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Vagas para carro elétrico" />
+
+                <TextView
+                    android:id="@+id/parking_details_electric_spots_text_view"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingHorizontal="4dp"
+                    android:text="4 de 10" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Tabela de Preços"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/parking_details_15min_view"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Preço dos Primeiros 15 minutos" />
+
+                <TextView
+                    android:id="@+id/parking_details_15min_text_view"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingHorizontal="4dp"
+                    android:text="R$10,00" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/parking_details_1hour_view"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Preço por hora:" />
+
+                <TextView
+                    android:id="@+id/parking_details_1hour_text_view"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingHorizontal="4dp"
+                    android:text="R$10,00" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/parking_details_night_view"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Preço do pernoite:" />
+
+                <TextView
+                    android:id="@+id/parking_details_night_text_view"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingHorizontal="4dp"
+                    android:text="R$10,00" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/parking_details_24hour_view"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Preço por 24 horas" />
+
+                <TextView
+                    android:id="@+id/parking_details_24hour_text_view"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingHorizontal="4dp"
+                    android:text="R$10,00" />
+
+            </LinearLayout>
+
+            <Button
+                android:layout_margin="16dp"
+                android:id="@+id/parking_details_book_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reservar" />
+
         </LinearLayout>
 
+    </ScrollView>
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
 
-
-            <TextView
-                android:id="@+id/vacancyLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Vagas Disponíveis:" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                tools:ignore="NestedWeights">
-
-            </View>
-            <TextView
-                android:id="@+id/vacancyTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2 de 10" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/insuranceInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Com Seguro" />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/bookBtn"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="28dp"
-        android:text="Reservar"
-        android:textColor="@color/primary"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <ImageButton
-        android:id="@+id/favBtn"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="28dp"
-        android:src="@drawable/ic_star"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -49,11 +49,15 @@ class SpotsListRecyclerViewAdapter(
 
         if (spot.electric){
             holder.electric.visibility = View.VISIBLE
+            holder.handicap.visibility = View.GONE
+        } else if (spot.preferential) {
+            holder.handicap.visibility = View.VISIBLE
+            holder.electric.visibility = View.GONE
+        } else {
+            holder.handicap.visibility = View.GONE
+            holder.electric.visibility = View.GONE
         }
 
-        if (spot.preferential){
-            holder.handicap.visibility = View.VISIBLE
-        }
 
         if (spot.reserved){
             holder.light.setImageResource(R.drawable.yellow_light)
@@ -67,7 +71,7 @@ class SpotsListRecyclerViewAdapter(
             holder.status.text = status
         } else{
             holder.light.setImageResource(R.drawable.green_light)
-            holder.status.text = "Vaga Disponivel"
+            holder.status.text = "Vaga Disponível"
         }
 
         if (spot.occupied || spot.reserved) {
@@ -79,7 +83,7 @@ class SpotsListRecyclerViewAdapter(
                         val typeInt = type.toInt()
                         val color = carData["color"] as Long
                         val colorInt = color.toInt()
-                        UIHelpers.getCarIcon(typeInt, colorInt, holder.car)
+                        holder.car.setImageResource(UIHelpers.getCarIcon(typeInt, colorInt))
                         holder.car.visibility = View.VISIBLE
                     }
                 }

@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.turingparking.R
 import com.example.turingparking.adapters.ParkingListRecyclerViewAdapter
 import com.example.turingparking.classes.ParkingList
-import com.example.turingparking.firebase_classes.Parking
 import com.example.turingparking.firebase_classes.Spots
 import com.example.turingparking.helpers.ParkingListClickInterface
 import com.example.turingparking.user_fragments.CarListFragment
@@ -26,7 +25,7 @@ import java.util.UUID
 class ParkingListFragment : Fragment(), ParkingListClickInterface {
 
     private var columnCount = 0
-    private var parkingList = ArrayList<Parking>()
+    private var parkingList = ArrayList<ParkingList>()
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var fragmentView: View
@@ -43,7 +42,6 @@ class ParkingListFragment : Fragment(), ParkingListClickInterface {
         fragmentView = inflater.inflate(R.layout.fragment_parking_list, container, false)
         val listView = fragmentView.findViewById<RecyclerView>(R.id.parking_recycler_view)
         val emptyView = fragmentView.findViewById<LinearLayout>(R.id.empty_state_parking)
-        val list = ArrayList<ParkingList>()
         val currentUser = auth.currentUser
         val userid = currentUser?.uid
         db.collection("parkings").whereEqualTo("userId", userid)
@@ -65,20 +63,19 @@ class ParkingListFragment : Fragment(), ParkingListClickInterface {
                     parking.id = parkingData["id"] as String
                     val spots = parkingData["spots"] as Long
                     parking.spots = spots.toInt()
-                    val electricSpotsLong = parkingData["spots"] as Long
-                    val electricSpots = spots.toInt()
-                    val handicapSpotsLong = parkingData["spots"] as Long
-                    val handicapSpots = spots.toInt()
+                    val electricSpotsLong = parkingData["electricSpots"] as Long
+                    val electricSpots = electricSpotsLong.toInt()
+                    val handicapSpotsLong = parkingData["handicapSpots"] as Long
+                    val handicapSpots = handicapSpotsLong.toInt()
                     db.collection("spots").whereEqualTo("parkingId", parking.id)
                         .get().addOnSuccessListener { documents ->
                             if (documents.size() < parking.spots) {
                                 Log.d(TAG, "onCreateView: ${parking.spots}")
                                 Log.d(TAG, "onCreateView: ${documents.size()}")
-                                val toAdd =
-                                    parking.spots - documents.size() - handicapSpots - electricSpots
-                                var handicap = handicapSpots
-                                var electric = electricSpots
-                                for (i in 1..handicap) {
+                                Log.d(TAG, "onCreateView: $handicapSpots")
+                                Log.d(TAG, "onCreateView: $electricSpots")
+                                val toAdd = parking.spots - documents.size() - handicapSpots - electricSpots
+                                for (i in 1..handicapSpots) {
                                     val spot = Spots(parking.id)
                                     val id = UUID.randomUUID().toString()
                                     spot.id = id
@@ -98,15 +95,11 @@ class ParkingListFragment : Fragment(), ParkingListClickInterface {
                                     spot.id = id
                                     db.collection("spots").document(id).set(spot)
                                 }
-
-
                             }
                         }
-
-
-                list.add(parking)
+                parkingList.add(parking)
             }
-        val columnCount = list.size
+        columnCount = parkingList.size
         Log.d(TAG, "onCreateView: $columnCount")
 
         if (columnCount == 0) {
@@ -114,7 +107,7 @@ class ParkingListFragment : Fragment(), ParkingListClickInterface {
             listView.visibility = View.GONE
         } else {
             emptyView.visibility = View.GONE
-            listView.adapter = ParkingListRecyclerViewAdapter(list, this)
+            listView.adapter = ParkingListRecyclerViewAdapter(parkingList, this)
             listView.visibility = View.VISIBLE
         }
             }.addOnFailureListener { exception ->

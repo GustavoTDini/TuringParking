@@ -48,10 +48,9 @@ class AddViewModel : ViewModel() {
         newParking.twentyFour = twentyFour
     }
 
-    fun addFinance(priceFor15: Double, priceForHour: Double, priceFor4Hour: Double, priceFor24Hour: Double, priceForNight: Double, insured: Boolean, spots: Int, electricSpots: Int, handicapSpots: Int) {
+    fun addFinance(priceFor15: Double, priceForHour: Double, priceFor24Hour: Double, priceForNight: Double, insured: Boolean, spots: Int, electricSpots: Int, handicapSpots: Int) {
         newParking.priceFor15 = priceFor15
         newParking.priceForHour = priceForHour
-        newParking.priceFor4Hour = priceFor4Hour
         newParking.priceFor24Hour = priceFor24Hour
         newParking.priceForNight = priceForNight
         newParking.insured = insured

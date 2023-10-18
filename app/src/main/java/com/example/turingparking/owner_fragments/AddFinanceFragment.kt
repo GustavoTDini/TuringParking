@@ -54,9 +54,6 @@ class AddFinanceFragment : Fragment() {
         price1HourDouble = parking.priceForHour
         var price1Hour: Int = price1HourDouble.toInt()
         var price1HourCents: Double = price1HourDouble - floor(price1HourDouble)
-        price4HoursDouble = parking.priceFor4Hour
-        var price4Hours: Int = price4HoursDouble.toInt()
-        var price4HoursCents: Double = price4HoursDouble - floor(price4HoursDouble)
         price24HoursDouble = parking.priceFor24Hour
         var price24Hours: Int = price24HoursDouble.toInt()
         var price24HoursCents: Double = price24HoursDouble - floor(price24HoursDouble)
@@ -145,46 +142,6 @@ class AddFinanceFragment : Fragment() {
             price1HourCents = 0.0
         }
 
-        // Control for 4 Hours prices
-        val price4HoursPicker = fragmentView.findViewById<View>(R.id.picker_4_hours) as NumberPicker
-        price4HoursPicker.minValue = 0
-        price4HoursPicker.maxValue = 999
-        price4HoursPicker.value = price4Hours
-        price4HoursPicker.wrapSelectorWheel = true
-        price4HoursPicker.setOnValueChangedListener { _, _, newVal: Int ->
-            price4Hours = newVal
-            price4HoursDouble = (price4Hours + price4HoursCents)
-        }
-
-        val price4HoursCentsPicker = fragmentView.findViewById<View>(R.id.picker_4_hours_cents) as NumberPicker
-        price4HoursCentsPicker.setFormatter { i -> String.format("%02d", i) }
-        price4HoursCentsPicker.minValue = 0
-        price4HoursCentsPicker.maxValue = 99
-        price4HoursCentsPicker.value = (price4HoursCents*100).toInt()
-        price4HoursCentsPicker.wrapSelectorWheel = true
-        price4HoursCentsPicker.setOnValueChangedListener { _, _, newVal: Int ->
-            price4HoursCents = (newVal.toDouble()/100)
-            price4HoursDouble = (price15min + price15minCents)
-        }
-
-        val price4HoursSwitch = fragmentView.findViewById<View>(R.id.switch_4_hours) as SwitchCompat
-        price4HoursSwitch.isChecked = price4HoursDouble >= 0
-        price4HoursSwitch.setOnCheckedChangeListener { _, checked ->
-            if (checked){
-                price4HoursPicker.isEnabled = true
-                price4HoursCentsPicker.isEnabled = true
-                price4HoursDouble = -0.0
-            } else{
-                price4HoursPicker.isEnabled = false
-                price4HoursCentsPicker.isEnabled = false
-                price4HoursDouble = -1.0
-            }
-            price4HoursPicker.value = 0
-            price4HoursCentsPicker.value = 0
-            price4Hours = 0
-            price4HoursCents = 0.0
-        }
-
         // Control for 24 Hours prices
         val price24HoursPicker = fragmentView.findViewById<View>(R.id.picker_24_hours) as NumberPicker
         price24HoursPicker.minValue = 0
@@ -204,7 +161,7 @@ class AddFinanceFragment : Fragment() {
         price24HoursCentsPicker.wrapSelectorWheel = true
         price24HoursCentsPicker.setOnValueChangedListener { _, _, newVal: Int ->
             price24HoursCents = (newVal.toDouble()/100)
-            price24HoursDouble = (price4Hours + price4HoursCents)
+            price24HoursDouble = (price24Hours + price24HoursCents)
         }
 
         val price24HoursView = fragmentView.findViewById<View>(R.id.view_24_hours) as LinearLayout
@@ -247,7 +204,7 @@ class AddFinanceFragment : Fragment() {
         priceNightCentsPicker.wrapSelectorWheel = true
         priceNightCentsPicker.setOnValueChangedListener { _, _, newVal: Int ->
             priceNightCents = (newVal.toDouble()/100)
-            priceNightDouble = (price4Hours + price4HoursCents)
+            priceNightDouble = (priceNight + priceNightCents)
         }
 
         val priceNightView = fragmentView.findViewById<View>(R.id.view_night) as LinearLayout
@@ -332,7 +289,7 @@ class AddFinanceFragment : Fragment() {
         nextButton.setOnClickListener {
 
 
-            viewModel.addFinance(price15minDouble, price1HourDouble, price4HoursDouble, price24HoursDouble, priceNightDouble, insured, spots, electricSpots, handicapSpots)
+            viewModel.addFinance(price15minDouble, price1HourDouble, price4HoursDouble, price24HoursDouble, insured, spots, electricSpots, handicapSpots)
             fragmentView.findNavController().navigate(R.id.nav_add_finish)
         }
         return fragmentView
