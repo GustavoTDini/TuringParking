@@ -12,17 +12,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.turingparking.R
 import com.example.turingparking.adapters.ParkingListRecyclerViewAdapter
 import com.example.turingparking.classes.ParkingList
-import com.example.turingparking.firebase_classes.Spots
-import com.example.turingparking.helpers.ParkingListClickInterface
+import com.example.turingparking.helpers.ParkingListClickListener
 import com.example.turingparking.user_fragments.CarListFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.UUID
 
-class ParkingListFragment : Fragment(), ParkingListClickInterface {
+class ParkingListFragment : Fragment(), ParkingListClickListener {
 
     private var columnCount = 0
     private var parkingList = ArrayList<ParkingList>()
@@ -44,75 +43,10 @@ class ParkingListFragment : Fragment(), ParkingListClickInterface {
         val emptyView = fragmentView.findViewById<LinearLayout>(R.id.empty_state_parking)
         val currentUser = auth.currentUser
         val userid = currentUser?.uid
-        db.collection("parkings").whereEqualTo("userId", userid)
-            .get().addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val parkingData = document.data
-                    val parking = ParkingList(userid.toString())
-                    parking.name = parkingData["name"] as String
-                    val addressStreet = parkingData["addressStreet"] as String
-                    val addressNumber = parkingData["addressNumber"] as String
-                    val addressComplement = parkingData["addressComplement"] as String
-                    val addressDistrict = parkingData["addressDistrict"] as String
-                    val addressCity = parkingData["addressCity"] as String
-                    val addressState = parkingData["addressState"] as String
-
-                    parking.address =
-                        "$addressStreet, $addressNumber $addressComplement - $addressDistrict. $addressCity - $addressState"
-                    parking.imageUri = parkingData["imageUri"] as String
-                    parking.id = parkingData["id"] as String
-                    val spots = parkingData["spots"] as Long
-                    parking.spots = spots.toInt()
-                    val electricSpotsLong = parkingData["electricSpots"] as Long
-                    val electricSpots = electricSpotsLong.toInt()
-                    val handicapSpotsLong = parkingData["handicapSpots"] as Long
-                    val handicapSpots = handicapSpotsLong.toInt()
-                    db.collection("spots").whereEqualTo("parkingId", parking.id)
-                        .get().addOnSuccessListener { documents ->
-                            if (documents.size() < parking.spots) {
-                                Log.d(TAG, "onCreateView: ${parking.spots}")
-                                Log.d(TAG, "onCreateView: ${documents.size()}")
-                                Log.d(TAG, "onCreateView: $handicapSpots")
-                                Log.d(TAG, "onCreateView: $electricSpots")
-                                val toAdd = parking.spots - documents.size() - handicapSpots - electricSpots
-                                for (i in 1..handicapSpots) {
-                                    val spot = Spots(parking.id)
-                                    val id = UUID.randomUUID().toString()
-                                    spot.id = id
-                                    spot.preferential = true
-                                    db.collection("spots").document(id).set(spot)
-                                }
-                                for (i in 1..electricSpots) {
-                                    val spot = Spots(parking.id)
-                                    val id = UUID.randomUUID().toString()
-                                    spot.id = id
-                                    spot.electric = true
-                                    db.collection("spots").document(id).set(spot)
-                                }
-                                for (i in 1..toAdd) {
-                                    val spot = Spots(parking.id)
-                                    val id = UUID.randomUUID().toString()
-                                    spot.id = id
-                                    db.collection("spots").document(id).set(spot)
-                                }
-                            }
-                        }
-                parkingList.add(parking)
-            }
-        columnCount = parkingList.size
-        Log.d(TAG, "onCreateView: $columnCount")
-
-        if (columnCount == 0) {
-            emptyView.visibility = View.VISIBLE
-            listView.visibility = View.GONE
-        } else {
-            emptyView.visibility = View.GONE
-            listView.adapter = ParkingListRecyclerViewAdapter(parkingList, this)
-            listView.visibility = View.VISIBLE
+        if (userid !== null){
+            getParkingList(userid, emptyView, listView)
         }
-            }.addOnFailureListener { exception ->
-                Log.w(CarListFragment.TAG, "Error getting documents: ", exception)
-            }
+
         return fragmentView
     }
 
@@ -125,4 +59,70 @@ class ParkingListFragment : Fragment(), ParkingListClickInterface {
         bundle.putString("parkingId", id)
         fragmentView.findNavController().navigate(R.id.nav_spots, bundle)
     }
+
+    private fun getParkingList(
+        userid: String?,
+        emptyView: LinearLayout,
+        listView: RecyclerView
+    ) {
+        db.collection("parkings").whereEqualTo("userId", userid)
+            .get().addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val parking = getParking(document, userid)
+                    parkingList.add(parking)
+                }
+                columnCount = parkingList.size
+
+                setVisibility(emptyView, listView)
+            }.addOnFailureListener { exception ->
+                Log.w(CarListFragment.TAG, "Error getting documents: ", exception)
+            }
+    }
+
+    private fun getParking(
+        document: QueryDocumentSnapshot,
+        userid: String?
+    ): ParkingList {
+        val parkingData = document.data
+        val parking = ParkingList(userid.toString())
+        parking.name = parkingData["name"] as String
+        val addressStreet = parkingData["addressStreet"] as String
+        val addressNumber = parkingData["addressNumber"] as String
+        val addressComplement = parkingData["addressComplement"] as String
+        val addressDistrict = parkingData["addressDistrict"] as String
+        val addressCity = parkingData["addressCity"] as String
+        val addressState = parkingData["addressState"] as String
+        parking.address =
+            "$addressStreet, $addressNumber $addressComplement - $addressDistrict. $addressCity - $addressState"
+        parking.imageUri = parkingData["imageUri"] as String
+        parking.id = parkingData["id"] as String
+        val spots = parkingData["spots"] as Long
+        parking.spots = spots.toInt()
+        val usedSpots = parkingData["usedSpots"] as Long
+        val usedElectricSpots = parkingData["usedElectricSpots"] as Long
+        val usedHandicapSpots = parkingData["usedHandicapSpots"] as Long
+        parking.usedSpots = usedSpots.toInt() + usedElectricSpots.toInt() + usedHandicapSpots.toInt()
+
+//        val electricSpotsLong = parkingData["electricSpots"] as Long
+//        val electricSpots = electricSpotsLong.toInt()
+//        val handicapSpotsLong = parkingData["handicapSpots"] as Long
+//        val handicapSpots = handicapSpotsLong.toInt()
+//        FirebaseHelpers.createParkingSpots(parking, handicapSpots, electricSpots)
+        return parking
+    }
+
+    private fun setVisibility(
+        emptyView: LinearLayout,
+        listView: RecyclerView
+    ) {
+        if (columnCount == 0) {
+            emptyView.visibility = View.VISIBLE
+            listView.visibility = View.GONE
+        } else {
+            emptyView.visibility = View.GONE
+            listView.adapter = ParkingListRecyclerViewAdapter(parkingList, this)
+            listView.visibility = View.VISIBLE
+        }
+    }
+
 }

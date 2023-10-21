@@ -1,22 +1,24 @@
 package com.example.turingparking.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.turingparking.classes.ParkingList
 import com.example.turingparking.databinding.ListItemParkingBinding
-import com.example.turingparking.helpers.ParkingListClickInterface
+import com.example.turingparking.helpers.ParkingListClickListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 class ParkingListRecyclerViewAdapter(
-    private val values: List<ParkingList>, private val parkingListClickInterface: ParkingListClickInterface)
+    private val values: List<ParkingList>, private val parkingListClickListener: ParkingListClickListener)
  : RecyclerView.Adapter<ParkingListRecyclerViewAdapter.ViewHolder>() {
 
     lateinit var context: Context
@@ -46,9 +48,15 @@ class ParkingListRecyclerViewAdapter(
                 .into(holder.image)
         }
         holder.address.text = parking.address
+        val usedSpots = parking.usedSpots
+        val spots = parking.spots
+        val barHeight = ((spots - usedSpots)*60)/spots
+        Log.d(TAG, "onBindViewHolder: $barHeight")
+        holder.spotProgressBar.layoutParams = LinearLayout.LayoutParams(48, barHeight)
+        holder.spotProgressBar.requestLayout()
 
         holder.item.setOnClickListener {
-            parkingListClickInterface.onParkingListItemClick(it, parking.id)
+            parkingListClickListener.onParkingListItemClick(it, parking.id)
         }
     }
 
@@ -60,7 +68,7 @@ class ParkingListRecyclerViewAdapter(
         val image: ImageView = binding.parkingListImageView
         val name: TextView = binding.parkingListNameTextView
         val address: TextView = binding.parkingListAddressTextView
-        //val spotProgressBar: ImageView = binding.spotsProgressBar
+        val spotProgressBar: ImageView = binding.spotsProgressBarGreen
         val item: ConstraintLayout = binding.parkingListItem
 
         override fun toString(): String {

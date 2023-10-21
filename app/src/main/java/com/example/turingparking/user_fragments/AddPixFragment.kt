@@ -1,18 +1,16 @@
 package com.example.turingparking.user_fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import com.example.turingparking.R
 import com.example.turingparking.firebase_classes.Pix
+import com.example.turingparking.helpers.FirebaseHelpers
 import com.example.turingparking.network.HttpRequestHelpers
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -91,7 +89,6 @@ class AddPixFragment : Fragment() {
         val payPixButtom = fragmentView.findViewById<Button>(R.id.pay_pix_buttom)
         payPixButtom.setOnClickListener {
             val currentUser = auth.currentUser
-
             if(currentUser != null) {
                 val pix = Pix(currentUser.uid)
                 val id = UUID.randomUUID().toString()
@@ -101,37 +98,14 @@ class AddPixFragment : Fragment() {
                 val walletId = arguments?.getString("walletId")
                 if (walletId != null) {
                     pix.walletId = walletId
-                    db.collection("pix").document(id).set(pix)
-                        .addOnSuccessListener {
-                            db.collection("wallets").document(walletId).get().addOnSuccessListener { document ->
-                                val data = document.data
-                                if (data != null) {
-                                    var currentValue = data["currentValue"] as Double
-                                    currentValue = currentValue + value
-                                    db.collection("wallets").document(walletId).update("currentValue", currentValue).addOnSuccessListener {
-                                        fragmentView.findNavController().navigate(R.id.nav_wallet)
-                                    }
-                                }
-                            }
-                            Log.d(AddCarFragment.TAG, "DocumentSnapshot successfully written!")
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(context, "Falha no envio do PIX!", Toast.LENGTH_SHORT)
-                                .show()
-                            Log.w(AddCarFragment.TAG, "Error writing document", e)
-                        }
+                    FirebaseHelpers.addPIx(pix, fragmentView, requireContext())
                 }
             }
-
-
-
         }
-
-
-
-
         return fragmentView
     }
+
+
 
     companion object {
         val TAG = "AddPixFragment"

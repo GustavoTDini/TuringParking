@@ -13,11 +13,8 @@ class SelectUserTypeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_user_type)
-
         // calling the action bar
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         val userButton = findViewById<ImageButton>(R.id.user_button)
         userButton.setOnClickListener {
             val intent = Intent(this, MainUserActivity::class.java)
@@ -32,14 +29,14 @@ class SelectUserTypeActivity : AppCompatActivity() {
 
     }
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             android.R.id.home -> {
                 val intent = Intent(this, StartActivity::class.java)
                 startActivity(intent)
                 return true
             }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onContextItemSelected(item)
     }
 }

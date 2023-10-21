@@ -20,9 +20,6 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.turingparking.BuildConfig
 import com.example.turingparking.R
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 /**
  * A simple [Fragment] subclass.
@@ -32,7 +29,6 @@ import com.google.firebase.ktx.Firebase
 class AddAddressFragment : Fragment() {
 
     private val viewModel: AddViewModel by activityViewModels()
-    private lateinit var auth: FirebaseAuth
     private lateinit var geocoder: Geocoder
     private lateinit var cepEdit: EditText
     private lateinit var streetEdit: EditText
@@ -44,7 +40,6 @@ class AddAddressFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth = Firebase.auth
         geocoder = Geocoder(this.requireContext())
     }
 

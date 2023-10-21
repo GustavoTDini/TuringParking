@@ -1,9 +1,7 @@
 package com.example.turingparking.owner_fragments
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,21 +10,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import com.example.turingparking.R
 import com.example.turingparking.firebase_classes.Parking
+import com.example.turingparking.helpers.FirebaseHelpers
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
-import java.io.ByteArrayOutputStream
 import java.text.NumberFormat
 import java.util.Currency
 
@@ -34,15 +26,11 @@ class AddFinishFragment : Fragment(), OnMapReadyCallback {
 
     private val viewModel: AddViewModel by activityViewModels()
     private lateinit var parking: Parking
-    private lateinit var storage: FirebaseStorage
-    private lateinit var db: FirebaseFirestore
     private var mGoogleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parking = viewModel.getParking()
-        storage = Firebase.storage
-        db = Firebase.firestore
     }
 
     override fun onCreateView(
@@ -89,8 +77,8 @@ class AddFinishFragment : Fragment(), OnMapReadyCallback {
         val stateTextView = fragmentView.findViewById<TextView>(R.id.verify_address_state)
         stateTextView.text = parking.addressState
 
-        val fotoImageView = fragmentView.findViewById<ImageView>(R.id.verify_image)
-        fotoImageView.setImageBitmap(viewModel.getImage())
+        val photoImageView = fragmentView.findViewById<ImageView>(R.id.verify_image)
+        photoImageView.setImageBitmap(viewModel.getImage())
 
         val view24HoursTime = fragmentView.findViewById<View>(R.id.verify_24_hours_time_view)
         val twentyFourTextView = fragmentView.findViewById<TextView>(R.id.verify_24_hours_time)
@@ -149,14 +137,10 @@ class AddFinishFragment : Fragment(), OnMapReadyCallback {
 
         val nextButton = fragmentView.findViewById<View>(R.id.next_button) as Button
         nextButton.setOnClickListener {
-            saveImage(viewModel.getImage(), fragmentView)
+            FirebaseHelpers.saveImage(viewModel.getImage(), fragmentView, parking)
         }
-
-
         return fragmentView
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -171,7 +155,6 @@ class AddFinishFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun setLocation() {
-
         val position  = viewModel.getCoordinates()
         mGoogleMap?.moveCamera(
             CameraUpdateFactory.newLatLngZoom(
@@ -190,42 +173,9 @@ class AddFinishFragment : Fragment(), OnMapReadyCallback {
         private const val TAG = "AddFinishFragment"
     }
 
-    fun createImageFile(bitmapImage: Bitmap): ByteArray{
-        val bos = ByteArrayOutputStream()
-        bitmapImage.compress(Bitmap.CompressFormat.PNG,0, bos)
-        return bos.toByteArray()
-    }
 
-    private fun saveImage(bitmapImage: Bitmap, view: View) {
-        val storageRef = storage.reference
-        val imageRef = storageRef.child("parkingImages/${parking.id}.jpg")
-        val uploadTask = imageRef.putBytes(createImageFile(bitmapImage))
-        uploadTask.continueWithTask { task ->
-            if (!task.isSuccessful) {
-                task.exception?.let {it
-                    Log.e(TAG, "saveImage: $it")
-                    throw it
-                }
-            }
-            imageRef.downloadUrl
-        }.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val downloadUri = task.result
-                parking.imageUri = downloadUri.toString()
-                saveParkingToFirebase(parking, view)
-            } else {
-                Log.e(TAG, "saveImage: $task")
-            }
-        }
-    }
 
-    private fun saveParkingToFirebase(parking: Parking, view: View) {
-        db.collection("parkings").document(parking.id)
-            .set(parking)
-            .addOnSuccessListener {
-                Log.d(TAG, "DocumentSnapshot successfully written!")
-                view.findNavController().navigate(R.id.nav_about)
-            }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-    }
+
+
+
 }

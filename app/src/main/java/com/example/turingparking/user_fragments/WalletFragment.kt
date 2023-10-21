@@ -105,26 +105,47 @@ class WalletFragment : Fragment() {
         val currentUser = auth.currentUser
         val userid = currentUser?.uid
         db.collection("pix").whereEqualTo("userId", userid)
-            .get().addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val transactionData = document.data
+            .get().addOnSuccessListener { pixes ->
+                for (pix in pixes) {
+                    val pixData = pix.data
                     val type = 0
-                    val value = transactionData["value"] as Double
-                    val date = transactionData["date"] as Long
+                    val value = pixData["value"] as Double
+                    val date = pixData["date"] as Long
                     val name = "Recarga PIX"
-                    val transaction = Transaction(type, name, date, value)
-                    list.add(transaction)
+                    val pix = Transaction(type, name, date, value)
+                    list.add(pix)
                 }
-                val columnCount = list.size
+                db.collection("stops").whereEqualTo("userId", userid).whereEqualTo("finalized", true)
+                    .get().addOnSuccessListener { stops ->
+                        for (stop in stops) {
+                            val stopData = stop.data
+                            val type = 1
+                            val value = stopData["cost"] as Double
+                            val date = stopData["timeOfCheckIn"] as Long
+                            db.collection("parkings").document(stopData["parkingId"].toString())
+                                .get().addOnSuccessListener { parkingDoc ->
+                                    val parking = parkingDoc.data
+                                    val parkingName = parking?.get("name") as String
+                                    val name = "Gasto no estacionamento $parkingName"
+                                    val cost = Transaction(type, name, date, -value)
+                                    list.add(cost)
+                                    
+                                    val columnCount = list.size
 
-                if (columnCount == 0) {
-                    emptyView.visibility = View.VISIBLE
-                    listView.visibility = View.GONE
-                } else {
-                    emptyView.visibility = View.GONE
-                    listView.adapter = TransactionListRecyclerViewAdapter(list)
-                    listView.visibility = View.VISIBLE
-                }
+                                    if (columnCount == 0) {
+                                        emptyView.visibility = View.VISIBLE
+                                        listView.visibility = View.GONE
+                                    } else {
+                                        emptyView.visibility = View.GONE
+                                        listView.adapter = TransactionListRecyclerViewAdapter(list.sortedBy { transaction -> transaction.date})
+                                        listView.visibility = View.VISIBLE
+                                    }
+
+
+                                }
+                        }
+                    }
+
 
             }
             .addOnFailureListener { exception ->

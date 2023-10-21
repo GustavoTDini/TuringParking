@@ -1,7 +1,6 @@
 package com.example.turingparking.user_fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -14,7 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import com.example.turingparking.MyApplication
 import com.example.turingparking.R
+import com.example.turingparking.helpers.TuringSharing
 import com.example.turingparking.helpers.UIHelpers
 import com.example.turingparking.user.ParkingViewActivity
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -43,9 +44,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private var currentCarType = 100
     private var currentCarColor = 100
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = Firebase.firestore
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -60,27 +64,37 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-        val carId = sharedPref?.getString("SELECTED_CAR", "Empty").toString()
-        db.collection("cars").document(carId).get()
-            .addOnSuccessListener {document ->
-                if (document.data !== null){
-                    val carType = document.data!!["type"] as Long
-                    val carColor = document.data!!["color"] as Long
-                    currentCarColor = carColor.toInt()
-                    currentCarType = carType.toInt()
+        val turingSharing = TuringSharing(MyApplication.applicationContext())
+        val carId = turingSharing.getCarId().toString()
+        db.collection("cars").document(carId)
+            .addSnapshotListener { document, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
                 }
-        }.addOnFailureListener{e->
-            currentCarType = 100
-            currentCarColor = 100
-            Log.d(TAG, "Falha no requisição Firebase $e")
-        }
+                if (document != null) {
+                    if (document.data != null) {
+                        val carType = document.data!!["type"] as Long
+                        val carColor = document.data!!["color"] as Long
+                        currentCarColor = carColor.toInt()
+                        currentCarType = carType.toInt()
+                    }
+                }
+            }
 
 
-
-
-
+//        {document ->
+//                if (document.data !== null){
+//                    val carType = document.data!!["type"] as Long
+//                    val carColor = document.data!!["color"] as Long
+//                    currentCarColor = carColor.toInt()
+//                    currentCarType = carType.toInt()
+//                }
+//            }.addOnFailureListener{e->
+//                currentCarType = 100
+//                currentCarColor = 100
+//                Log.d(TAG, "Falha no requisição Firebase $e")
+//            }
 
         return inflater.inflate(R.layout.fragment_maps, container, false)
     }

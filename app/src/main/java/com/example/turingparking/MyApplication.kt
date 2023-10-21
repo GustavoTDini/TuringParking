@@ -1,21 +1,24 @@
 package com.example.turingparking
 
 import android.app.Application
-import com.example.turingparking.data.TuringDB
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import android.content.Context
+
 
 class MyApplication: Application() {
-
-    val applicationScope = CoroutineScope(SupervisorJob())
+    init {
+        instance = this
+    }
 
     companion object {
-        var database: TuringDB? = null
+        private var instance: MyApplication? = null
+
+        fun applicationContext() : Context {
+            return instance!!.applicationContext
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
-        //Room
-        database = TuringDB.getDatabase(this, applicationScope)
+        val context: Context = applicationContext()
     }
 }

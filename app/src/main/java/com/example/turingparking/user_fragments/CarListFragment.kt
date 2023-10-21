@@ -1,6 +1,5 @@
 package com.example.turingparking.user_fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,10 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.turingparking.MyApplication
 import com.example.turingparking.R
 import com.example.turingparking.adapters.CarListRecyclerViewAdapter
 import com.example.turingparking.firebase_classes.Car
 import com.example.turingparking.helpers.CarListClickListener
+import com.example.turingparking.helpers.Helpers.Companion.createCar
+import com.example.turingparking.helpers.TuringSharing
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -47,8 +49,8 @@ class CarListFragment : Fragment(), CarListClickListener{
         savedInstanceState: Bundle?
     ): View? {
         currentUser = auth.currentUser!!
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-        currentCarId = sharedPref?.getString("SELECTED_CAR", "EMPTY").toString()
+        val turingSharing = TuringSharing(MyApplication.applicationContext())
+        currentCarId = turingSharing.getCarId().toString()
         val view = inflater.inflate(R.layout.fragment_car_list, container, false)
         listView = view.findViewById(R.id.car_recycler_view)
         val emptyView = view.findViewById<LinearLayout>(R.id.empty_car_list)
@@ -75,19 +77,8 @@ class CarListFragment : Fragment(), CarListClickListener{
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
-                    val carData = document.data
-                    val car = Car(userid)
-                    car.id = carData["id"] as String
-                    car.handicap = carData["handicap"] as Boolean
-                    car.electric = carData["electric"] as Boolean
-                    car.plate = carData["plate"] as String
-                    car.nick = carData["nick"] as String
-                    val type = carData["type"] as Long
-                    car.type = type.toInt()
-                    val color = carData["color"] as Long
-                    car.color = color.toInt()
+                    val car = createCar(document.data, userid)
                     carList.add(car)
-                    Log.d(TAG, "${document.id} => ${document.data}")
                 }
                 columnCount = carList.size
                 if (columnCount == 0) {
@@ -109,19 +100,16 @@ class CarListFragment : Fragment(), CarListClickListener{
             }
     }
 
+
+
     companion object {
         const val TAG = "CarListFragment"
     }
 
     override fun onCarListItemClick(view: View, id: String) {
         Log.d(TAG, "onCarListItemClick: $id")
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-        if (sharedPref != null) {
-            with (sharedPref.edit()) {
-                putString("SELECTED_CAR", id)
-                apply()
-            }
-        }
+        val turingSharing = TuringSharing(MyApplication.applicationContext())
+        turingSharing.setCarId(id)
         currentCarId = id
         db.collection("users").document(currentUser.uid)
             .update("currentCar", id)

@@ -1,9 +1,8 @@
 package com.example.turingparking.user
 
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
@@ -11,13 +10,18 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NavUtils
 import com.bumptech.glide.Glide
+import com.example.turingparking.MyApplication
 import com.example.turingparking.R
 import com.example.turingparking.firebase_classes.Stops
+import com.example.turingparking.helpers.FirebaseHelpers
+import com.example.turingparking.helpers.Helpers
+import com.example.turingparking.helpers.TuringSharing
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -34,8 +38,8 @@ class ParkingViewActivity : AppCompatActivity() {
     private lateinit var storage: FirebaseStorage
     private var electricCar = false
     private var handicapCar = false
+    private var carId = ""
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parking_view)
@@ -44,6 +48,14 @@ class ParkingViewActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         storage = Firebase.storage
         db = Firebase.firestore
+
+        val turingSharing = TuringSharing(MyApplication.applicationContext())
+        carId = turingSharing.getCarId().toString()
+        getCarDetails()
+
+        val format: NumberFormat = NumberFormat.getCurrencyInstance()
+        format.maximumFractionDigits = 2
+        format.currency = Currency.getInstance("BRL")
 
         val nameTextView = findViewById<TextView>(R.id.parking_details_name_text_view)
         val addressTextView = findViewById<TextView>(R.id.parking_details_address_text_view)
@@ -74,50 +86,46 @@ class ParkingViewActivity : AppCompatActivity() {
 
         val parkingId = intent.extras?.getString("id")
 
-        val format: NumberFormat = NumberFormat.getCurrencyInstance()
-        format.maximumFractionDigits = 2
-        format.currency = Currency.getInstance("BRL")
-
         if (parkingId != null) {
             db.collection("parkings").document(parkingId)
                 .get()
                 .addOnSuccessListener { result ->
-                    try{
-                        val parkingid = result.getString("id") as String
-                        val name = result.getString("name") as String
-                        val insured = result.getBoolean("insured") as Boolean
-                        val addressStreet = result.getString("addressStreet") as String
-                        val addressNumber = result.getString("addressNumber") as String
-                        val addressComplement = result.getString("addressComplement") as String
-                        val addressDistrict = result.getString("addressDistrict") as String
-                        val addressCity = result.getString("addressCity") as String
-                        val addressState = result.getString("addressState") as String
-                        val latitude = result.getDouble("latitude") as Double
-                        val longitude = result.getDouble("longitude") as Double
-                        val openHour = result.getString("openHour") as String
-                        val closeHour = result.getString("closeHour") as String
-                        val twentyFour = result.getBoolean("twentyFour") as Boolean
-                        val priceFor15 = result.getDouble("priceFor15") as Double
-                        val priceForHour = result.getDouble("priceForHour") as Double
-                        val priceFor24Hour = result.getDouble("priceFor24Hour") as Double
-                        val priceForNight = result.getDouble("priceForNight") as Double
-                        val spotsDouble = result.getDouble("spots") as Double
-                        val spots = spotsDouble.toInt()
-                        val electricSpotsDouble = result.getDouble("electricSpots") as Double
-                        val electricSpots = electricSpotsDouble.toInt()
-                        val handicapSpotsDouble = result.getDouble("handicapSpots") as Double
-                        val handicapSpots = handicapSpotsDouble.toInt()
-                        val usedSpotsDouble = result.getDouble("usedSpots") as Double
-                        val usedSpots = usedSpotsDouble.toInt()
-                        val usedElectricSpotsDouble = result.getDouble("usedElectricSpots") as Double
-                        val usedElectricSpots = usedElectricSpotsDouble.toInt()
-                        val usedHandicapSpotsDouble = result.getDouble("usedHandicapSpots") as Double
-                        val usedHandicapSpots = usedHandicapSpotsDouble.toInt()
-                        val evaluationsDouble = result.getDouble("evaluations") as Double
-                        val evaluations = evaluationsDouble.toInt()
-                        val ratingDouble = result.getDouble("rating") as Double
-                        val rating = ratingDouble.toInt()
-                        val imageUrl = result.getString("imageUri") as String
+                    val parkingData = result.data
+                    if(parkingData !== null){
+                        val name = parkingData["name"] as String
+                        val insured = parkingData["insured"] as Boolean
+                        val addressStreet = parkingData["addressStreet"] as String
+                        val addressNumber = parkingData["addressNumber"] as String
+                        val addressComplement = parkingData["addressComplement"] as String
+                        val addressDistrict = parkingData["addressDistrict"] as String
+                        val addressCity = parkingData["addressCity"] as String
+                        val addressState = parkingData["addressState"] as String
+                        val latitude = parkingData["latitude"] as Double
+                        val longitude = parkingData["longitude"] as Double
+                        val openHour = parkingData["openHour"] as String
+                        val closeHour = parkingData["closeHour"] as String
+                        val twentyFour = parkingData["twentyFour"] as Boolean
+                        val priceFor15 = parkingData["priceFor15"] as Double
+                        val priceForHour = parkingData["priceForHour"] as Double
+                        val priceFor24Hour = parkingData["priceFor24Hour"] as Double
+                        val priceForNight = parkingData["priceForNight"] as Double
+                        val spotsLong = parkingData["spots"] as Long
+                        val spots = spotsLong.toInt()
+                        val electricSpotsLong = parkingData["electricSpots"] as Long
+                        val electricSpots = electricSpotsLong.toInt()
+                        val handicapSpotsLong = parkingData["handicapSpots"] as Long
+                        val handicapSpots = handicapSpotsLong.toInt()
+                        val usedSpotsLong = parkingData["usedSpots"] as Long
+                        val usedSpots = usedSpotsLong.toInt()
+                        val usedElectricSpotsLong = parkingData["usedElectricSpots"] as Long
+                        val usedElectricSpots = usedElectricSpotsLong.toInt()
+                        val usedHandicapSpotsLong = parkingData["usedHandicapSpots"] as Long
+                        val usedHandicapSpots = usedHandicapSpotsLong.toInt()
+                        val evaluationsLong = parkingData["evaluations"] as Long
+                        val evaluations = evaluationsLong.toInt()
+                        val ratingLong = parkingData["rating"] as Long
+                        val rating = ratingLong.toInt()
+                        val imageUrl = parkingData["imageUri"] as String
 
                         if (insured){
                             insuranceView.visibility = View.VISIBLE
@@ -203,21 +211,14 @@ class ParkingViewActivity : AppCompatActivity() {
                                 .into(parkingImageView)
                         }
 
-                        bookingButton.setOnClickListener{
-                            val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
-                            val carId = sharedPref?.getString("SELECTED_CAR", "Empty").toString()
-                            db.collection("cars").document(carId).get()
-                                .addOnSuccessListener {document ->
-                                    try {
-                                        electricCar = document.getBoolean("electric") == true
-                                        handicapCar = document.getBoolean("handicap") == true
-                                    }catch (e: Error){
-                                        Log.e(TAG, "onCreate: $e", )
-                                    }
-                                }.addOnFailureListener{e->
-                                    Log.d(TAG, "Falha no requisição Firebase $e")
-                                }
+                        checkIfIsFavorite(currentUser, parkingId, favoriteButton)
 
+                        favoriteButton.setOnClickListener{
+                            setFavorite(favoriteButton, currentUser, parkingId)
+                        }
+
+                        bookingButton.setOnClickListener{
+                            Log.d(TAG, "onCreate: Booking")
                             val id = UUID.randomUUID().toString()
                             val stop = Stops(currentUser?.uid.toString())
                             stop.active = true
@@ -228,77 +229,196 @@ class ParkingViewActivity : AppCompatActivity() {
                             stop.longitude = longitude
                             stop.reserved = true
                             stop.timeOfReserve = System.currentTimeMillis()
-                            //TODO: Testar se há vagas respectivas disponiveis
                             if (electricCar){
-                                stop.electric = true
-                            }
-                            if (handicapCar){
-                                stop.electric = true
-                            }
-
-
-                            db.collection("stops").document(id).set(stop).addOnSuccessListener {it->
-                                if (electricCar){
-                                    db.collection("parkings").document(parkingId)
-                                        .update("usedSpots", usedSpots + 1,
-                                            "usedElectricSpots", usedElectricSpots + 1)
-                                } else if(handicapCar){
-                                    db.collection("parkings").document(parkingId)
-                                        .update("usedSpots", usedSpots + 1,
-                                            "usedHandicapSpots", usedHandicapSpots + 1)
+                                Log.d(TAG, "onCreate: ElectricCar")
+                                if (availableElectricSpots <= 0){
+                                    openElectricCarDialog(stop, name, id, parkingId)
                                 } else{
-                                    db.collection("parkings").document(parkingId)
-                                        .update("usedSpots", usedSpots + 1)
+                                    stop.electric = true
+                                    confirmReserve(name, id, stop, parkingId)
                                 }
-                            }.addOnFailureListener { e->
-                                Log.d(TAG, "Falha no requisição Firebase $e")
+                            } else if (handicapCar){
+                                Log.d(TAG, "onCreate: HandicapCar")
+                                if (availableHandicapSpots <= 0){
+                                    openHandicapCarDialog(stop, name, id, parkingId)
+                                } else{
+                                    stop.preferential = true
+                                    confirmReserve(name, id, stop, parkingId)
+                                }
+                            } else{
+                                Log.d(TAG, "onCreate: Plain")
+                                confirmReserve(name, id, stop, parkingId)
                             }
-
-//            lifecycleScope.launch {
-//                val timestamp = LocalDate.now().toString()
-//                val preferences = this@ParkingViewActivity.getSharedPreferences("user_preferences", MODE_PRIVATE)
-//                val userId = auth.currentUser?.providerId.toString()
-//                if (auth.currentUser ==  null){
-//                    Toast.makeText(this@ParkingViewActivity, "Usuario não Logado", Toast.LENGTH_SHORT).show()
-//                    val intent = Intent(this@ParkingViewActivity, StartActivity::class.java)
-//                    startActivity(intent)
-//                } else{
-//                    val book = mParking?.parkingId?.let { it1 -> Stop(it1, userId, timestamp ) }
-//                    if (book != null) {
-//                        MyApplication.database?.stopDao()?.insert(book)
-//                        val intent = Intent(this@ParkingViewActivity, MainUserActivity::class.java)
-//                        startActivity(intent)
-//                    }
-//                }
-//
-//            }
                         }
-
-                        favoriteButton.setOnClickListener{
-                            Toast.makeText(this@ParkingViewActivity, "Função ainda a ser implementada", Toast.LENGTH_SHORT).show()
-                        }
-
-
-
-
-
-
-                    }catch (e: Error){
-                        Log.e(TAG, "onCreate: $e", )
+                    } else{
+                        goToMap()
                     }
-
                 }
                 .addOnFailureListener { exception ->
                     Log.d(TAG, "Error getting documents: ", exception)
                 }
-
-
         }
+    }
+
+    private fun openHandicapCarDialog(
+        stop: Stops,
+        name: String,
+        id: String,
+        parkingId: String
+    ) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Não há mais vagas preferenciais, podemos colocá-lo em uma vaga comum?")
+            .setCancelable(false)
+            .setPositiveButton("Sim") { dialog, _ ->
+                stop.preferential = false
+                dialog.dismiss()
+                confirmReserve(name, id, stop, parkingId)
+            }
+            .setNegativeButton("Não") { dialog, _ ->
+                goToMap()
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    private fun openElectricCarDialog(
+        stop: Stops,
+        name: String,
+        id: String,
+        parkingId: String
+    ) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Não há mais vagas para Carro elétrico, podemos coloca-lo em uma vaga comum?")
+            .setCancelable(false)
+            .setPositiveButton("Sim") { dialog, _ ->
+                stop.electric = false
+                dialog.dismiss()
+                confirmReserve(name, id, stop, parkingId)
+            }
+            .setNegativeButton("Não") { dialog, _ ->
+                dialog.dismiss()
+                goToMap()
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    private fun checkIfIsFavorite(
+        currentUser: FirebaseUser?,
+        parkingId: String?,
+        favoriteButton: ImageButton
+    ) {
+        db.collection("users").document(currentUser?.uid.toString())
+            .get().addOnSuccessListener { document ->
+                val favoritesList = document.get("favorites") as List<*>
+                if (favoritesList.contains(parkingId)) {
+                    favoriteButton.setImageResource(R.drawable.full_star)
+                    favoriteButton.tag = "full"
+                } else {
+                    favoriteButton.setImageResource(R.drawable.empty_star)
+                    favoriteButton.tag = "empty"
+                }
+            }
+    }
+
+    private fun setFavorite(
+        favoriteButton: ImageButton,
+        currentUser: FirebaseUser?,
+        parkingId: String
+    ) {
+        val userId = currentUser?.uid.toString()
+        if (favoriteButton.tag == "empty") {
+            FirebaseHelpers.favoritePark(userId, parkingId, favoriteButton)
+        } else if (favoriteButton.tag == "full") {
+            FirebaseHelpers.unfavoritePark(userId, parkingId, favoriteButton)
+        }
+    }
+
+    private fun getCarDetails() {
+        db.collection("cars").document(carId).get()
+            .addOnSuccessListener { document ->
+                val car = document.data
+                if (car != null) {
+                    electricCar = car["electric"] as Boolean
+                    handicapCar = car["handicap"] as Boolean
+
+                }
+            }.addOnFailureListener { e ->
+                Log.d(TAG, "Falha no requisição Firebase $e")
+            }
+    }
+
+    private fun confirmReserve(
+        name: String,
+        id: String,
+        stop: Stops,
+        parkingId: String
+    ) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Confirma sua reserva no estacionamento $name?")
+            .setCancelable(false)
+            .setPositiveButton("Sim") { dialog, _ ->
+                    db.collection("stops").document(id).set(stop).addOnSuccessListener {
+                        findSpot(parkingId, stop, stop.electric, stop.preferential)
+                        if (stop.electric) {
+                            FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedElectricSpots", this)
+                        } else if (stop.preferential) {
+                            FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedHandicapSpots", this)
+                        } else {
+                            FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedSpots", this)
+                        }
+                    }.addOnFailureListener { e ->
+                        Log.d(TAG, "Falha no requisição Firebase $e")
+                    }
+                dialog.dismiss()
+            }
+            .setNegativeButton("Não") { dialog, _ ->
+                goToMap()
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    private fun findSpot(
+        parkingId: String,
+        stop: Stops,
+        electric: Boolean,
+        preferential: Boolean
+    ) {
+        db.collection("spots")
+            .whereEqualTo("parkingId", parkingId)
+            .whereEqualTo("electric", electric)
+            .whereEqualTo("preferential", preferential)
+            .limit(1).get().addOnSuccessListener { document ->
+                val data = document.documents[0]
+                val spotId = data.id
+                val occupied = false
+                val reserved = true
+                val priority = Helpers.definePriority(electric, preferential, occupied, reserved)
+                FirebaseHelpers.updateReservedSpot(spotId, carId, stop.timeOfReserve, stop.id, priority)
+            }
+    }
 
 
+
+
+    private fun goToMap(){
+        NavUtils.navigateUpFromSameTask(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                goToMap()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
     companion object {
-        private const val TAG = "ParkingViewActivityLog"
+        private const val TAG = "ParkingViewActivity"
     }
 
 

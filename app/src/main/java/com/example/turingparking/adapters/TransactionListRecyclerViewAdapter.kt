@@ -65,7 +65,7 @@ class TransactionListRecyclerViewAdapter(
         } else if (transaction.type == debit){
             holder.type.setImageResource(R.drawable.parking_icon)
             holder.details.text = "Estacionado"
-            val value = "- ${formatCurrency.format(transaction.value)}"
+            val value = formatCurrency.format(transaction.value)
             holder.value.text = value
             holder.value.setTextColor(context.resources.getColor((R.color.error)))
         }

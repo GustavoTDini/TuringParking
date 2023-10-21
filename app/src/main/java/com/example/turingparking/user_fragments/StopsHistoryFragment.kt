@@ -9,11 +9,9 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.turingparking.MyApplication
 import com.example.turingparking.R
 import com.example.turingparking.StartActivity
 import com.example.turingparking.adapters.StopsHistoryRecyclerViewAdapter
@@ -22,7 +20,6 @@ import com.example.turingparking.data.StopParking
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.launch
 
 /**
  * A fragment representing a list of Items.
@@ -65,16 +62,16 @@ class StopsHistoryFragment : Fragment() {
             val intent = Intent(requireActivity(), StartActivity::class.java)
             startActivity(intent)
         } else {
-            lifecycleScope.launch {
-                stopList = MyApplication.database?.stopDao()?.getStopsFromUser(userId)!!
-                for (stop in stopList) {
-                    val parking =
-                        MyApplication.database?.parkingDao()?.getParkingFromId(stop.parkingId)!!
-                    val stopParking = StopParking(stop.dateTime, parking.parkingName, parking.preco)
-                    showList.add(stopParking)
-                    columnCount = showList.size
-                }
-            }
+//            lifecycleScope.launch {
+//                stopList = MyApplication.database?.stopDao()?.getStopsFromUser(userId)!!
+//                for (stop in stopList) {
+//                    val parking =
+//                        MyApplication.database?.parkingDao()?.getParkingFromId(stop.parkingId)!!
+//                    val stopParking = StopParking(stop.dateTime, parking.parkingName, parking.preco)
+//                    showList.add(stopParking)
+//                    columnCount = showList.size
+//                }
+//            }
         }
     }
 

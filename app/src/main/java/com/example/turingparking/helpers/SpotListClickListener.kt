@@ -1,7 +1,13 @@
 package com.example.turingparking.helpers
 
 import android.view.View
+import com.example.turingparking.firebase_classes.Car
+import com.example.turingparking.firebase_classes.Spots
 
 interface SpotListClickListener {
-    fun onParkingListItemClick(view: View, id: String)
+    fun onSpotListItemClick(
+        view: View,
+        spot: Spots,
+        car: Car?
+    )
 }

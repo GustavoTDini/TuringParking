@@ -1,17 +1,16 @@
 package com.example.turingparking
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.turingparking.data.User
+import com.example.turingparking.helpers.TuringSharing
 import com.google.android.recaptcha.Recaptcha
 import com.google.android.recaptcha.RecaptchaAction
 import com.google.android.recaptcha.RecaptchaClient
@@ -25,16 +24,12 @@ import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
-    var recaptchaCode = ""
-
     var loginLayout: LinearLayout? = null
-    var recaptchaLayout: LinearLayout? = null
-    var recaptchaImage: ImageView? = null
-    var recapctchaEditText: EditText? = null
     var user: User? = null
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var recaptchaClient: RecaptchaClient
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +62,7 @@ class LoginActivity : AppCompatActivity() {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         if (currentUser != null) {
+            getCarId()
             goToSelect()
         }
     }
@@ -116,21 +112,7 @@ class LoginActivity : AppCompatActivity() {
                 .execute(RecaptchaAction.LOGIN)
                 .onSuccess { token->
                     Toast.makeText(baseContext, "Usuário verificado pelo reCAPTCHA", Toast.LENGTH_SHORT).show()
-                    db.collection("userd")
-                        .document(auth.currentUser?.uid.toString())
-                        .get()
-                        .addOnSuccessListener {document ->
-                            val carId = document.data?.get("currentCar") as String
-                            val sharedPref = this@LoginActivity.getPreferences(Context.MODE_PRIVATE) ?: return@addOnSuccessListener
-                            with (sharedPref.edit()) {
-                                putString("SELECTED_CAR", carId)
-                                apply()
-                            }
-                        }
-                        .addOnFailureListener{ e ->
-                            Log.d("reCAPTCHA", "Falha no requisição Firebase $e")
-                        }
-                    Log.d("reCAPTCHA", token)
+                    getCarId()
                     goToSelect()
                 }
                 .onFailure { e ->
@@ -138,6 +120,20 @@ class LoginActivity : AppCompatActivity() {
                     returnToStart()
                 }
         }
+    }
+
+    private fun getCarId() {
+        db.collection("users")
+            .document(auth.currentUser?.uid.toString())
+            .get()
+            .addOnSuccessListener { document ->
+                val car = document.data
+                if (car != null){
+                    val carId = car["currentCar"] as String
+                    val turingSharing = TuringSharing(MyApplication.applicationContext())
+                    turingSharing.setCarId(carId)
+                }
+            }
     }
 
     private fun goToSelect() {
@@ -151,6 +147,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "EmailPassword"
+        private const val TAG = "LoginActivity"
     }
 }
