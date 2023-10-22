@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.turingparking.R
 import com.example.turingparking.databinding.ListItemSpotBinding
-import com.example.turingparking.firebase_classes.Car
 import com.example.turingparking.firebase_classes.Spots
 import com.example.turingparking.helpers.Helpers.Companion.createCar
 import com.example.turingparking.helpers.SpotListClickListener
@@ -31,7 +30,6 @@ class SpotsListRecyclerViewAdapter(
 
     lateinit var context: Context
     private lateinit var db: FirebaseFirestore
-    private lateinit var car: Car
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
@@ -66,7 +64,7 @@ class SpotsListRecyclerViewAdapter(
 
         if (spot.reserved){
             holder.light.setImageResource(R.drawable.yellow_light)
-            val status = "Reservado no dia ${dateFormat.format(spot.timeOfReserve)} as ${timeFormat.format(spot.timeOfReserve)}"
+            val status = "Reservado no dia ${dateFormat.format(spot.timeOfReserve)} as ${timeFormat.format(spot.timeOfReserve)} estimativa de chegar as ${timeFormat.format(1697925567880)}"
             holder.status.text = status
         } else if (spot.occupied){
             holder.light.setImageResource(R.drawable.red_light)

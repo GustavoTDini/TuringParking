@@ -173,6 +173,19 @@ class FirebaseHelpers {
                 .update("reserved", false, "occupied", true, "timeOfCheckIn", checkInTime, "priority", priority)
         }
 
+        fun updateEstimatedArrivalTime(
+            stopId: String,
+            spotId: String,
+            estimatedTime: Long,
+        ) {
+            val db = Firebase.firestore
+            Log.d(TAG, "updateEstimatedArrivalTime: $estimatedTime")
+            db.collection("stops").document(stopId)
+                .update("estimatedTimeOfArrive", estimatedTime)
+            db.collection("spots").document(spotId)
+                .update("estimatedTimeOfArrive", estimatedTime)
+        }
+
         fun updateCheckInStop(
             stopId: String,
             checkInTime: Long,
@@ -180,6 +193,15 @@ class FirebaseHelpers {
             val db = Firebase.firestore
             db.collection("stops").document(stopId)
                 .update("reserved", false, "occupied", true, "timeOfCheckIn", checkInTime)
+        }
+
+        fun defineStopSpot(
+            stopId: String,
+            spotId: String,
+        ) {
+            val db = Firebase.firestore
+            db.collection("stops").document(stopId)
+                .update("spotId", spotId)
         }
 
         fun updateLeaveSpot(
@@ -257,12 +279,6 @@ class FirebaseHelpers {
                 }
         }
 
-
-
-
-
     }
-
-
 
 }

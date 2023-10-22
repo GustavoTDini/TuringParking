@@ -124,13 +124,10 @@ class SpotsListFragment : Fragment(), SpotListClickListener {
             usedSpot = "usedHandicapSpots"
         }
         if (car != null){
-            val priority = definePriority(spot.electric, spot.preferential, spot.occupied, spot.reserved)
-            val carType = resources.getStringArray(R.array.types_array)[car.type]
-            val carColor = resources.getStringArray(R.array.colors_array)[car.color]
             if (spot.reserved){
-                carArriveDialog(carType, carColor, car, spot.id, currentTime, priority, spot.reserveId)
+                carArriveDialog(car, spot, currentTime)
             } else if (spot.occupied){
-                carLeaveDialog(carType, carColor, car, spot, currentTime, priority, usedSpot)
+                carLeaveDialog(car, spot, currentTime, usedSpot)
             }
         } else{
             var status = "Vaga Livre - Nunca ocupada!"
@@ -140,20 +137,18 @@ class SpotsListFragment : Fragment(), SpotListClickListener {
                 status = "Vaga Livre - Ultimo carro saiu as  ${timeFormat.format(spot.timeOfLeave)} do dia ${dateFormat.format(spot.timeOfLeave)}}"
             }
             Toast.makeText(requireContext(), status, Toast.LENGTH_LONG).show()
-            Log.d(TAG, "onSpotListItemClick: Free")
         }
     }
 
     private fun carLeaveDialog(
-        carType: String?,
-        carColor: String?,
         car: Car,
         spot: Spots,
         currentTime: Long,
-        priority: Int,
         usedSpot: String
     ) {
         val builder = AlertDialog.Builder(requireContext())
+        val carType = resources.getStringArray(R.array.types_array)[car.type]
+        val carColor = resources.getStringArray(R.array.colors_array)[car.color]
         builder.setMessage("Confirma que o $carType $carColor de placa ${car.plate} está saindo?")
             .setCancelable(false)
             .setPositiveButton("Sim") { dialog, _ ->
@@ -173,6 +168,7 @@ class SpotsListFragment : Fragment(), SpotListClickListener {
                                 priceFor24Hours,
                                 priceForNight
                             )
+                            val priority = definePriority(spot.electric, spot.preferential, false, false)
                             FirebaseHelpers.spendWallet(car.userId, cost)
                             FirebaseHelpers.updateLeaveSpot(spot.id, currentTime, priority)
                             FirebaseHelpers.updateLeaveStop(spot.reserveId, currentTime, cost)
@@ -196,20 +192,19 @@ class SpotsListFragment : Fragment(), SpotListClickListener {
     }
 
     private fun carArriveDialog(
-        carType: String?,
-        carColor: String?,
         car: Car,
-        spotId: String,
+        spot: Spots,
         currentTime: Long,
-        priority: Int,
-        stopId: String
     ) {
         val builder = AlertDialog.Builder(requireContext())
+        val carType = resources.getStringArray(R.array.types_array)[car.type]
+        val carColor = resources.getStringArray(R.array.colors_array)[car.color]
         builder.setMessage("Confirma que o $carType $carColor de placa ${car.plate} chegou?")
             .setCancelable(false)
             .setPositiveButton("Sim") { dialog, _ ->
-                FirebaseHelpers.updateCheckInSpot(spotId, currentTime, priority)
-                FirebaseHelpers.updateCheckInStop(stopId, currentTime)
+                val priority = definePriority(spot.electric, spot.preferential, true, false)
+                FirebaseHelpers.updateCheckInSpot(spot.id, currentTime, priority)
+                FirebaseHelpers.updateCheckInStop(spot.id, currentTime)
                 Log.d(TAG, "onSpotListItemClick: Reserved")
                 dialog.dismiss()
             }

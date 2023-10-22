@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +15,7 @@ import com.example.turingparking.helpers.ParkingListClickListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+
 
 class ParkingListRecyclerViewAdapter(
     private val values: List<ParkingList>, private val parkingListClickListener: ParkingListClickListener)
@@ -50,10 +50,24 @@ class ParkingListRecyclerViewAdapter(
         holder.address.text = parking.address
         val usedSpots = parking.usedSpots
         val spots = parking.spots
-        val barHeight = ((spots - usedSpots)*60)/spots
+        val height = holder.spotBackProgressBar.height
+        val barHeight = ((spots - usedSpots)*height)/spots
         Log.d(TAG, "onBindViewHolder: $barHeight")
-        holder.spotProgressBar.layoutParams = LinearLayout.LayoutParams(48, barHeight)
+        val width = 48
+        val params = holder.spotProgressBar.layoutParams as ConstraintLayout.LayoutParams
+        params.endToEnd = holder.item.id
+        params.bottomToBottom = holder.item.id
+        params.height = barHeight
+        params.width = width
         holder.spotProgressBar.requestLayout()
+
+//        holder.spotProgressBar.layoutParams = ConstraintLayout.LayoutParams(width, height)
+//        holder.spotProgressBar.layoutParams = ConstraintLayout.LayoutParams
+
+//        holder.spotBackProgressBar.layoutParams = ConstraintLayout.LayoutParams(48, 60)
+//        holder.spotBackProgressBar.requestLayout()
+//        holder.spotProgressBar.layoutParams = ConstraintLayout.LayoutParams(48, barHeight)
+//        holder.spotProgressBar.requestLayout()
 
         holder.item.setOnClickListener {
             parkingListClickListener.onParkingListItemClick(it, parking.id)
@@ -68,13 +82,13 @@ class ParkingListRecyclerViewAdapter(
         val image: ImageView = binding.parkingListImageView
         val name: TextView = binding.parkingListNameTextView
         val address: TextView = binding.parkingListAddressTextView
+        val spotBackProgressBar: ImageView = binding.spotsProgressBarRed
         val spotProgressBar: ImageView = binding.spotsProgressBarGreen
         val item: ConstraintLayout = binding.parkingListItem
 
         override fun toString(): String {
             return super.toString() + " '" + name.text + "'"
         }
-
     }
 
     companion object {

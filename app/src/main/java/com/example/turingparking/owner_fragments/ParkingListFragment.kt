@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -41,10 +42,11 @@ class ParkingListFragment : Fragment(), ParkingListClickListener {
         fragmentView = inflater.inflate(R.layout.fragment_parking_list, container, false)
         val listView = fragmentView.findViewById<RecyclerView>(R.id.parking_recycler_view)
         val emptyView = fragmentView.findViewById<LinearLayout>(R.id.empty_state_parking)
+        val waitView = fragmentView.findViewById<ProgressBar>(R.id.wait_state_parking)
         val currentUser = auth.currentUser
         val userid = currentUser?.uid
         if (userid !== null){
-            getParkingList(userid, emptyView, listView)
+            getParkingList(userid, waitView, emptyView, listView)
         }
 
         return fragmentView
@@ -62,6 +64,7 @@ class ParkingListFragment : Fragment(), ParkingListClickListener {
 
     private fun getParkingList(
         userid: String?,
+        waitView: ProgressBar,
         emptyView: LinearLayout,
         listView: RecyclerView
     ) {
@@ -72,7 +75,7 @@ class ParkingListFragment : Fragment(), ParkingListClickListener {
                     parkingList.add(parking)
                 }
                 columnCount = parkingList.size
-
+                waitView.visibility = View.GONE
                 setVisibility(emptyView, listView)
             }.addOnFailureListener { exception ->
                 Log.w(CarListFragment.TAG, "Error getting documents: ", exception)

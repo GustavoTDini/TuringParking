@@ -139,7 +139,7 @@ class ParkingViewActivity : AppCompatActivity() {
                         addressTextView.text = address
 
                         if (evaluations <= 0){
-                            ratingsView.visibility = View.GONE
+                            ratingsView.visibility = View.VISIBLE
                             newParkingTextView.visibility = View.VISIBLE
                         } else {
                             ratingsView.visibility = View.VISIBLE
@@ -342,7 +342,6 @@ class ParkingViewActivity : AppCompatActivity() {
                 if (car != null) {
                     electricCar = car["electric"] as Boolean
                     handicapCar = car["handicap"] as Boolean
-
                 }
             }.addOnFailureListener { e ->
                 Log.d(TAG, "Falha no requisição Firebase $e")
@@ -361,13 +360,6 @@ class ParkingViewActivity : AppCompatActivity() {
             .setPositiveButton("Sim") { dialog, _ ->
                     db.collection("stops").document(id).set(stop).addOnSuccessListener {
                         findSpot(parkingId, stop, stop.electric, stop.preferential)
-                        if (stop.electric) {
-                            FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedElectricSpots", this)
-                        } else if (stop.preferential) {
-                            FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedHandicapSpots", this)
-                        } else {
-                            FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedSpots", this)
-                        }
                     }.addOnFailureListener { e ->
                         Log.d(TAG, "Falha no requisição Firebase $e")
                     }
@@ -398,6 +390,14 @@ class ParkingViewActivity : AppCompatActivity() {
                 val reserved = true
                 val priority = Helpers.definePriority(electric, preferential, occupied, reserved)
                 FirebaseHelpers.updateReservedSpot(spotId, carId, stop.timeOfReserve, stop.id, priority)
+                FirebaseHelpers.defineStopSpot(stop.id, spotId)
+                if (stop.electric) {
+                    FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedElectricSpots", this)
+                } else if (stop.preferential) {
+                    FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedHandicapSpots", this)
+                } else {
+                    FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedSpots", this)
+                }
             }
     }
 

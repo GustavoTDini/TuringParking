@@ -9,9 +9,7 @@ import com.example.turingparking.databinding.ListItemHistoryBinding
 import java.text.NumberFormat
 import java.util.Currency
 
-/**
- * [RecyclerView.Adapter] that can display a [PlaceholderItem].
- */
+
 class StopsHistoryRecyclerViewAdapter(
     private val values: List<StopParking>
 ) : RecyclerView.Adapter<StopsHistoryRecyclerViewAdapter.ViewHolder>() {
