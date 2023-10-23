@@ -1,13 +1,11 @@
 package com.example.turingparking.helpers
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.core.app.NavUtils
 import androidx.navigation.findNavController
 import com.example.turingparking.MyApplication
 import com.example.turingparking.R
@@ -35,6 +33,10 @@ class FirebaseHelpers {
                 .set(parking)
                 .addOnSuccessListener {
                     Log.d(TAG, "DocumentSnapshot successfully written!")
+                    val electricSpots = parking.electricSpots
+                    val handicapSpots = parking.handicapSpots
+                    //createParkingSpots(parking, handicapSpots, electricSpots)
+
                     view.findNavController().navigate(R.id.nav_about)
                 }
                 .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
@@ -138,40 +140,7 @@ class FirebaseHelpers {
             }
         }
 
-        fun spendWallet(
-            userId: String,
-            value: Double
-        ) {
-            val db = Firebase.firestore
-            db.collection("wallets").whereEqualTo("userId", userId).get().addOnSuccessListener { documents->
-                val walletId = documents.documents[0].id
-                db.collection("wallets").document(walletId).update(
-                    "currentValue", FieldValue.increment(-value)
-                )
-            }
-        }
 
-        fun updateReservedSpot(
-            spotId: String,
-            carId: String,
-            reserveTime: Long,
-            stopId: String,
-            priority: Int
-        ) {
-            val db = Firebase.firestore
-            db.collection("spots").document(spotId)
-                .update("reserved", true, "carId", carId, "timeOfReserve", reserveTime, "reserveId", stopId, "priority", priority)
-        }
-
-        fun updateCheckInSpot(
-            spotId: String,
-            checkInTime: Long,
-            priority: Int
-        ) {
-            val db = Firebase.firestore
-            db.collection("spots").document(spotId)
-                .update("reserved", false, "occupied", true, "timeOfCheckIn", checkInTime, "priority", priority)
-        }
 
         fun updateEstimatedArrivalTime(
             stopId: String,
@@ -179,67 +148,35 @@ class FirebaseHelpers {
             estimatedTime: Long,
         ) {
             val db = Firebase.firestore
-            Log.d(TAG, "updateEstimatedArrivalTime: $estimatedTime")
             db.collection("stops").document(stopId)
                 .update("estimatedTimeOfArrive", estimatedTime)
             db.collection("spots").document(spotId)
                 .update("estimatedTimeOfArrive", estimatedTime)
         }
 
-        fun updateCheckInStop(
+        fun cancelReserve(
             stopId: String,
-            checkInTime: Long,
+            spotId: String
         ) {
             val db = Firebase.firestore
-            db.collection("stops").document(stopId)
-                .update("reserved", false, "occupied", true, "timeOfCheckIn", checkInTime)
-        }
+            val currentTime = System.currentTimeMillis()
+            Log.d(TAG, "cancelReserve: $stopId")
+            db.collection("stops").document(stopId).get().addOnSuccessListener {document->
+                val spot = document.data
+                Log.d(TAG, "cancelReserve: $spot")
+                if (spot != null){
+                    val electric = spot["electric"] as Boolean
+                    val preferential = spot["preferential"] as Boolean
+                    db.collection("stops").document(stopId)
+                        .update("timeOfReserveCancel", currentTime, "reserved", false, "occupied", false, "finalized", false, "active", false, "cancelled", true)
+                    val priority = definePriority(electric, preferential, false, false)
+                    db.collection("spots").document(spotId)
+                        .update("carId", "", "occupied", false, "reserveId", "", "reserved", false, "priority", priority)
 
-        fun defineStopSpot(
-            stopId: String,
-            spotId: String,
-        ) {
-            val db = Firebase.firestore
-            db.collection("stops").document(stopId)
-                .update("spotId", spotId)
-        }
-
-        fun updateLeaveSpot(
-            spotId: String,
-            leaveTime: Long,
-            priority: Int
-        ) {
-            val db = Firebase.firestore
-            db.collection("spots").document(spotId)
-                .update("occupied", false, "carId", "", "reserveId", "" , "timeOfLeave", leaveTime, "priority", priority)
-        }
-
-        fun updateLeaveStop(
-            stopId: String,
-            leaveTime: Long,
-            cost: Double
-        ) {
-            val db = Firebase.firestore
-            db.collection("stops").document(stopId)
-                .update("occupied", false, "active", false, "finalized", true, "timeOfLeave", leaveTime, "cost", cost)
-        }
-
-        fun incrementUsedParkingSpot(parkingId: String, spotType: String, activity: Activity) {
-            val db = Firebase.firestore
-            db.collection("parkings").document(parkingId)
-                .update(
-                    spotType, FieldValue.increment(1)
-                ).addOnSuccessListener {
-                    NavUtils.navigateUpFromSameTask(activity)
                 }
-        }
 
-        fun decrementUsedParkingSpot(parkingId: String, spotType: String) {
-            val db = Firebase.firestore
-            db.collection("parkings").document(parkingId)
-                .update(
-                    spotType, FieldValue.increment(-1)
-                )
+            }
+
         }
 
         fun createParkingSpots(

@@ -15,10 +15,10 @@ import com.example.turingparking.R
 import com.example.turingparking.adapters.SpotsListRecyclerViewAdapter
 import com.example.turingparking.firebase_classes.Car
 import com.example.turingparking.firebase_classes.Spots
-import com.example.turingparking.helpers.FirebaseHelpers
 import com.example.turingparking.helpers.Helpers.Companion.defineCost
 import com.example.turingparking.helpers.Helpers.Companion.definePriority
 import com.example.turingparking.helpers.SpotListClickListener
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -169,19 +169,18 @@ class SpotsListFragment : Fragment(), SpotListClickListener {
                                 priceForNight
                             )
                             val priority = definePriority(spot.electric, spot.preferential, false, false)
-                            FirebaseHelpers.spendWallet(car.userId, cost)
-                            FirebaseHelpers.updateLeaveSpot(spot.id, currentTime, priority)
-                            FirebaseHelpers.updateLeaveStop(spot.reserveId, currentTime, cost)
-                            FirebaseHelpers.decrementUsedParkingSpot(spot.parkingId, usedSpot)
+                            updateLeaveStop(spot.reserveId, currentTime, cost)
+                            updateLeaveSpot(spot.id, currentTime, priority)
+                            decrementUsedParkingSpot(spot.parkingId, usedSpot)
+                            spendWallet(car.userId, cost)
                         } else {
                             Toast.makeText(
                                 requireContext(),
                                 "Deu algo errado na requisição, tente novamente!",
                                 Toast.LENGTH_LONG
                             ).show()
+                            dialog.dismiss()
                         }
-                        Log.d(TAG, "onSpotListItemClick: Occupied")
-                        dialog.dismiss()
                     }
             }
             .setNegativeButton("Não") { dialog, _ ->
@@ -203,9 +202,8 @@ class SpotsListFragment : Fragment(), SpotListClickListener {
             .setCancelable(false)
             .setPositiveButton("Sim") { dialog, _ ->
                 val priority = definePriority(spot.electric, spot.preferential, true, false)
-                FirebaseHelpers.updateCheckInSpot(spot.id, currentTime, priority)
-                FirebaseHelpers.updateCheckInStop(spot.id, currentTime)
-                Log.d(TAG, "onSpotListItemClick: Reserved")
+                updateCheckInSpot(spot.id, currentTime, priority)
+                updateCheckInStop(spot.reserveId, currentTime)
                 dialog.dismiss()
             }
             .setNegativeButton("Não") { dialog, _ ->
@@ -213,6 +211,66 @@ class SpotsListFragment : Fragment(), SpotListClickListener {
             }
         val alert = builder.create()
         alert.show()
+    }
+
+    private fun spendWallet(
+        userId: String,
+        value: Double
+    ) {
+        val db = Firebase.firestore
+        db.collection("wallets").whereEqualTo("userId", userId).get().addOnSuccessListener { documents->
+            val walletId = documents.documents[0].id
+            db.collection("wallets").document(walletId).update(
+                "currentValue", FieldValue.increment(-value)
+            )
+        }
+    }
+
+    private fun updateCheckInSpot(
+        spotId: String,
+        checkInTime: Long,
+        priority: Int
+    ) {
+        val db = Firebase.firestore
+        db.collection("spots").document(spotId)
+            .update("reserved", false, "occupied", true, "timeOfCheckIn", checkInTime, "priority", priority)
+    }
+
+    private fun updateCheckInStop(
+        stopId: String,
+        checkInTime: Long,
+    ) {
+        val db = Firebase.firestore
+        db.collection("stops").document(stopId)
+            .update("reserved", false, "occupied", true, "timeOfCheckIn", checkInTime)
+    }
+
+    private fun updateLeaveSpot(
+        spotId: String,
+        leaveTime: Long,
+        priority: Int
+    ) {
+        val db = Firebase.firestore
+        db.collection("spots").document(spotId)
+            .update("occupied", false, "carId", "", "reserveId", "" , "timeOfLeave", leaveTime, "priority", priority)
+    }
+
+    private fun updateLeaveStop(
+        stopId: String,
+        leaveTime: Long,
+        cost: Double
+    ) {
+        val db = Firebase.firestore
+        db.collection("stops").document(stopId)
+            .update("occupied", false, "active", false, "finalized", true, "timeOfLeave", leaveTime, "cost", cost)
+    }
+
+    private fun decrementUsedParkingSpot(parkingId: String, spotType: String) {
+        val db = Firebase.firestore
+        db.collection("parkings").document(parkingId)
+            .update(
+                spotType, FieldValue.increment(-1)
+            )
     }
 
     companion object{

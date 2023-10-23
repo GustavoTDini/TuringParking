@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 class TuringSharing(context: Context) {
 
     private val CURRENT_CAR = "currentCarId"
+    private val REFRESH_ESTIMATED_TIME = "estimatedTimeRefresh"
     private val TURING_SHARED = "Turing Sharing"
 
     private var sharedPrefs: SharedPreferences? = context.applicationContext.getSharedPreferences(TURING_SHARED, Context.MODE_PRIVATE)
@@ -19,6 +20,16 @@ class TuringSharing(context: Context) {
 
     fun getCarId(): String? {
         return sharedPrefs!!.getString(CURRENT_CAR, "Empty")
+    }
+
+    fun setEstimatedTimeClock(nextRefresh: Long) {
+        val editor = sharedPrefs!!.edit()
+        editor.putLong(REFRESH_ESTIMATED_TIME, nextRefresh)
+        editor.apply()
+    }
+
+    fun getRefreshTime(): Long {
+        return sharedPrefs!!.getLong(REFRESH_ESTIMATED_TIME, -1)
     }
 
 }

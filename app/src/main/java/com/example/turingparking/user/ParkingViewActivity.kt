@@ -1,5 +1,6 @@
 package com.example.turingparking.user
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -23,6 +24,7 @@ import com.example.turingparking.helpers.TuringSharing
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -358,11 +360,7 @@ class ParkingViewActivity : AppCompatActivity() {
         builder.setMessage("Confirma sua reserva no estacionamento $name?")
             .setCancelable(false)
             .setPositiveButton("Sim") { dialog, _ ->
-                    db.collection("stops").document(id).set(stop).addOnSuccessListener {
-                        findSpot(parkingId, stop, stop.electric, stop.preferential)
-                    }.addOnFailureListener { e ->
-                        Log.d(TAG, "Falha no requisição Firebase $e")
-                    }
+                findSpot(parkingId, stop, stop.electric, stop.preferential)
                 dialog.dismiss()
             }
             .setNegativeButton("Não") { dialog, _ ->
@@ -388,21 +386,50 @@ class ParkingViewActivity : AppCompatActivity() {
                 val spotId = data.id
                 val occupied = false
                 val reserved = true
+                stop.spotId = spotId
                 val priority = Helpers.definePriority(electric, preferential, occupied, reserved)
-                FirebaseHelpers.updateReservedSpot(spotId, carId, stop.timeOfReserve, stop.id, priority)
-                FirebaseHelpers.defineStopSpot(stop.id, spotId)
+                updateReservedSpot(spotId, carId, stop, priority, parkingId)
+            }
+    }
+
+    private fun updateReservedSpot(
+        spotId: String,
+        carId: String,
+        stop: Stops,
+        priority: Int,
+        parkingId: String
+    ) {
+        val db = Firebase.firestore
+        db.collection("spots").document(spotId)
+            .update("reserved", true, "carId", carId, "timeOfReserve", stop.timeOfReserve, "reserveId", stop.id, "priority", priority)
+            .addOnSuccessListener {
+                setReserve(stop)
                 if (stop.electric) {
-                    FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedElectricSpots", this)
+                    incrementUsedParkingSpot(parkingId, "usedElectricSpots", this)
                 } else if (stop.preferential) {
-                    FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedHandicapSpots", this)
+                    incrementUsedParkingSpot(parkingId, "usedHandicapSpots", this)
                 } else {
-                    FirebaseHelpers.incrementUsedParkingSpot(parkingId, "usedSpots", this)
+                    incrementUsedParkingSpot(parkingId, "usedSpots", this)
                 }
             }
     }
 
+    private fun setReserve(
+        stop: Stops,
+    ) {
+        val db = Firebase.firestore
+        db.collection("stops").document(stop.id).set(stop)
+    }
 
-
+    private fun incrementUsedParkingSpot(parkingId: String, spotType: String, activity: Activity) {
+        val db = Firebase.firestore
+        db.collection("parkings").document(parkingId)
+            .update(
+                spotType, FieldValue.increment(1)
+            ).addOnSuccessListener {
+                NavUtils.navigateUpFromSameTask(activity)
+            }
+    }
 
     private fun goToMap(){
         NavUtils.navigateUpFromSameTask(this)

@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.Volley
 import com.example.turingparking.BuildConfig
 import com.example.turingparking.MyApplication
 import com.example.turingparking.R
+import com.example.turingparking.helpers.FirebaseHelpers
 import com.example.turingparking.helpers.TuringSharing
 import com.example.turingparking.helpers.UIHelpers.Companion.getCarIcon
 import com.example.turingparking.user.ParkingViewActivity
@@ -34,10 +36,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.RoundCap
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.json.JSONArray
@@ -47,10 +53,13 @@ import org.json.JSONObject
 class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMarkerClickListener {
 
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private var mGoogleMap: GoogleMap? = null
-    private var mCurrentPosition: LatLng = LatLng(-23.550244, -46.633908)
-    private var mPositionMarker: Marker? = null
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var googleMap: GoogleMap? = null
+    private var currentPosition: LatLng = LatLng(-23.550244, -46.633908)
+    private lateinit var cancelFab: FloatingActionButton
+    private var carPositionMarker: Marker? = null
+    private var walkPositionMarker: Marker? = null
+    private var routePolyLine: Polyline? = null
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private var currentCarType = 100
@@ -61,20 +70,27 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private var reserved = false
     private var parked = false
     private var routeList: ArrayList<LatLng> = ArrayList()
+    private lateinit var reserveListener: ListenerRegistration
+    private lateinit var carListener: ListenerRegistration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = Firebase.firestore
         auth = Firebase.auth
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
+        setLocation()
+    }
 
+    override fun onStop() {
+        super.onStop()
+        reserveListener.remove()
+        carListener.remove()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mGoogleMap = googleMap
+        this.googleMap = googleMap
         googleMap.setOnMarkerClickListener(this)
-        setLocation()
-        db.collection("stops")
+        reserveListener = db.collection("stops")
             .whereEqualTo("userId", auth.currentUser?.uid.toString())
             .whereEqualTo("active", true)
             .addSnapshotListener { document, e ->
@@ -83,6 +99,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     return@addSnapshotListener
                 }
                 if (document != null) {
+                    setLocation()
                     if (document.documents.size > 0){
                         val currentReserve = document.documents[0]
                         val latitudeDest = currentReserve["latitude"] as Double
@@ -92,30 +109,63 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         reserveId = currentReserve["id"] as String
                         spotId = currentReserve["spotId"] as String
                         parkingId = currentReserve["parkingId"] as String
-                        getRouteWithDirections(latitudeDest, longitudeDest, mCurrentPosition.latitude, mCurrentPosition.longitude, "driving", requireContext())
-                        addMarkerToSelectedParking()
-                        if (reserved){
-                            addPositionMark(getCarIcon(currentCarType, currentCarColor))
-                        } else{
-                            addPositionMark(R.drawable.avatar_1)
-                            addCarMarkToParking(getCarIcon(currentCarType, currentCarColor), LatLng(latitudeDest, longitudeDest))
+                        getRouteWithDirections(latitudeDest, longitudeDest, currentPosition.latitude, currentPosition.longitude, "driving", requireContext())
+                        if (this.googleMap !== null){
+                            addMarkerToSelectedParking()
+                            if (reserved){
+                                addCarPositionMark(getCarIcon(currentCarType, currentCarColor), currentPosition)
+                                cancelFab.visibility = View.VISIBLE
+
+                            } else{
+                                cancelFab.visibility = View.GONE
+                                addCarPositionMark(getCarIcon(currentCarType, currentCarColor), LatLng(latitudeDest, longitudeDest))
+                                addWalkPositionMark(R.drawable.avatar_1,currentPosition)
+                            }
                         }
-                    } else{
-                        addMarkers()
-                        addPositionMark(getCarIcon(currentCarType, currentCarColor))
+                    }else{
+                        if (this.googleMap != null){
+                            cancelFab.visibility = View.GONE
+                            addMarkers()
+                            addCarPositionMark(getCarIcon(currentCarType, currentCarColor), currentPosition)
+                        }
+
                     }
                 }
             }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        val fragmentView: View = inflater.inflate(R.layout.fragment_maps, container, false)
+        cancelFab = fragmentView.findViewById(R.id.map_view_cancel_fab) as FloatingActionButton
+        cancelFab.setOnClickListener {
+            Log.d(TAG, "onCreateView spot: $spotId")
+            Log.d(TAG, "onCreateView reserve: $reserveId")
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("Cancelar a Reserva Atual?")
+                .setCancelable(false)
+                .setPositiveButton("Sim") { dialog, _ ->
+                    FirebaseHelpers.cancelReserve(reserveId, spotId)
+                    routePolyLine?.remove()
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Não") { dialog, _ ->
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
+
+                Log.d(TAG, "onMapReady: Click")
+
+
+        }
         val turingSharing = TuringSharing(MyApplication.applicationContext())
         val carId = turingSharing.getCarId().toString()
-        db.collection("cars").document(carId)
+        carListener = db.collection("cars").document(carId)
             .addSnapshotListener { document, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -127,74 +177,85 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         val carColor = document.data!!["color"] as Long
                         currentCarColor = carColor.toInt()
                         currentCarType = carType.toInt()
+
                     }
                 }
             }
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+
+
+
+        return fragmentView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(this )
+        val mapFragment = childFragmentManager.findFragmentById(R.id.main_map) as SupportMapFragment
+        mapFragment.getMapAsync(this )
     }
 
     override fun onLocationChanged(p0: Location) {
         setLocation()
+        if(parked){
+            addWalkPositionMark(R.drawable.avatar_1,currentPosition)
+        } else{
+            addCarPositionMark(getCarIcon(currentCarType, currentCarColor), currentPosition)
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun setLocation() {
-        mFusedLocationClient.lastLocation.addOnCompleteListener(this.requireActivity()) { task ->
+        fusedLocationClient.lastLocation.addOnCompleteListener(this.requireActivity()) { task ->
             val location: Location? = task.result
             if (location != null) {
-                mCurrentPosition = LatLng(
+                currentPosition = LatLng(
                     location.latitude,
                     location.longitude
-                )
-                mGoogleMap?.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        mCurrentPosition, 17f
-                    )
                 )
             }
         }
     }
 
-    private fun addPositionMark(drawable: Int) {
-        mPositionMarker?.remove()
-        val height = 200
-        val width = 200
-        val bitmapDraw = ResourcesCompat.getDrawable(resources,drawable, null) as BitmapDrawable
-        val bitmap = bitmapDraw.bitmap
-        val marker = Bitmap.createScaledBitmap(bitmap, width, height, false)
-        mPositionMarker = mGoogleMap?.addMarker(
-            MarkerOptions()
-                .position(mCurrentPosition)
-                .icon(BitmapDescriptorFactory.fromBitmap(marker))
-                .anchor(0.5f, 0.5f)
-                .draggable(true)
+    private fun moveToLocation() {
+        googleMap?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                currentPosition, 15f
+            )
         )
-        mPositionMarker?.hideInfoWindow()
-        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentPosition, 15f))
     }
 
-    private fun addCarMarkToParking(drawable: Int, position: LatLng) {
-        mPositionMarker?.remove()
+    private fun addCarPositionMark(drawable: Int, position: LatLng) {
+        carPositionMarker?.remove()
         val height = 200
         val width = 200
         val bitmapDraw = ResourcesCompat.getDrawable(resources,drawable, null) as BitmapDrawable
         val bitmap = bitmapDraw.bitmap
         val marker = Bitmap.createScaledBitmap(bitmap, width, height, false)
-        mPositionMarker = mGoogleMap?.addMarker(
+        carPositionMarker = googleMap?.addMarker(
             MarkerOptions()
                 .position(position)
                 .icon(BitmapDescriptorFactory.fromBitmap(marker))
                 .anchor(0.5f, 0.5f)
                 .draggable(true)
         )
-        mPositionMarker?.hideInfoWindow()
-        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentPosition, 15f))
+        carPositionMarker?.hideInfoWindow()
+        moveToLocation()
+    }
+
+    private fun addWalkPositionMark(drawable: Int, position: LatLng) {
+        walkPositionMarker?.remove()
+        val height = 150
+        val width = 150
+        val bitmapDraw = ResourcesCompat.getDrawable(resources,drawable, null) as BitmapDrawable
+        val bitmap = bitmapDraw.bitmap
+        val marker = Bitmap.createScaledBitmap(bitmap, width, height, false)
+        walkPositionMarker = googleMap?.addMarker(
+            MarkerOptions()
+                .position(position)
+                .icon(BitmapDescriptorFactory.fromBitmap(marker))
+                .anchor(0.5f, 0.5f)
+                .draggable(true)
+        )
+        walkPositionMarker?.hideInfoWindow()
     }
 
     private fun addMarkers() {
@@ -213,7 +274,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                                 .title(name)
                                 .snippet(id)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_turing_parking_map))
-                        }.let { mGoogleMap?.addMarker(it)}  
+                        }.let { googleMap?.addMarker(it)}
                     }catch (e: Error){
                         Log.e(TAG, "addMarkers: $e")
                     } 
@@ -241,7 +302,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                                 .title(name)
                                 .snippet(id)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_turing_parking_map))
-                        }.let { mGoogleMap?.addMarker(it)}
+                        }.let { googleMap?.addMarker(it)}
                     }catch (e: Error){
                         Log.e(TAG, "addMarkers: $e")
                     }
@@ -263,7 +324,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    fun getRouteWithDirections(
+    private fun getRouteWithDirections(
         latitudeDest: Double,
         longitudeDest: Double,
         latitudeOrig: Double,
@@ -288,30 +349,61 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 val legsArray = routeJson["legs"] as JSONArray
                 val legsJson = legsArray[0] as JSONObject
                 val duration = legsJson["duration"] as JSONObject
-                val durationMili = duration["value"] as Int
+                val durationSec = duration["value"] as Int
 
                 val stepsArray = legsJson["steps"] as JSONArray
-                routeList.add(LatLng(latitudeOrig, longitudeOrig))
-                for (i in 0 until stepsArray.length()) {
-                    val step = stepsArray.getJSONObject(i)
-                    val startLocation = step["start_location"] as JSONObject
-                    val startLat = startLocation["lat"] as Double
-                    val startLng = startLocation["lng"] as Double
-                    val routeStep = LatLng ( startLat, startLng )
-                    routeList.add(routeStep)
+                createRouteFromArray(latitudeOrig, longitudeOrig, stepsArray, latitudeDest, longitudeDest)
+
+                if (reserved){
+                    val estimatedTime = System.currentTimeMillis() + durationSec*1000
+                    val turingSharing = TuringSharing(MyApplication.applicationContext())
+                    val refreshTime = turingSharing.getRefreshTime()
+                    if (refreshTime != null) {
+                        if (refreshTime < 0){
+                            val nextRefreshTime = System.currentTimeMillis() + 60000
+                            turingSharing.setEstimatedTimeClock(nextRefreshTime)
+                            FirebaseHelpers.updateEstimatedArrivalTime(reserveId, spotId, estimatedTime)
+                        }
+                    }
+                    if (System.currentTimeMillis() > refreshTime!!){
+                        FirebaseHelpers.updateEstimatedArrivalTime(reserveId, spotId, estimatedTime)
+                        val nextRefreshTime = System.currentTimeMillis() + 60000
+                        turingSharing.setEstimatedTimeClock(nextRefreshTime)
+                    }
                 }
-                routeList.add(LatLng(latitudeDest, longitudeDest))
-                val routePolyline = PolylineOptions().color(resources.getColor(R.color.secondary_container)).width(15f).addAll(routeList)
-                mGoogleMap?.addPolyline(routePolyline)
-
-                val estimatedTime = System.currentTimeMillis() + durationMili*1000
-                //FirebaseHelpers.updateEstimatedArrivalTime(reserveId, spotId, estimatedTime)
-
-                Log.d("Response", duration.toString())
             }
         ) { e-> Log.d("Error.Response", e.toString()) }
         queue.add(request)
     }
+
+    private fun createRouteFromArray(
+        latitudeOrig: Double,
+        longitudeOrig: Double,
+        stepsArray: JSONArray,
+        latitudeDest: Double,
+        longitudeDest: Double
+    ) {
+        routePolyLine?.remove()
+        routeList.clear()
+        routeList.add(LatLng(latitudeOrig, longitudeOrig))
+        for (i in 0 until stepsArray.length()) {
+            val step = stepsArray.getJSONObject(i)
+            val startLocation = step["start_location"] as JSONObject
+            val startLat = startLocation["lat"] as Double
+            val startLng = startLocation["lng"] as Double
+            val routeStep = LatLng(startLat, startLng)
+            routeList.add(routeStep)
+        }
+        routeList.add(LatLng(latitudeDest, longitudeDest))
+        val routePolyLineOptions = context?.resources?.let {
+            PolylineOptions().color(it.getColor(R.color.secondary_container)).width(20f)
+                .addAll(routeList)
+                .endCap(RoundCap())
+                .startCap(RoundCap())
+        }
+
+        routePolyLine = routePolyLineOptions?.let { googleMap?.addPolyline(it) }
+        }
 
     companion object {
         private const val TAG = "MapsFragment"

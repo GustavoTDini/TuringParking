@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.turingparking.R
 import com.example.turingparking.adapters.ParkingListRecyclerViewAdapter
 import com.example.turingparking.classes.ParkingList
+import com.example.turingparking.helpers.FirebaseHelpers
 import com.example.turingparking.helpers.ParkingListClickListener
 import com.example.turingparking.user_fragments.CarListFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -45,6 +46,7 @@ class ParkingListFragment : Fragment(), ParkingListClickListener {
         val waitView = fragmentView.findViewById<ProgressBar>(R.id.wait_state_parking)
         val currentUser = auth.currentUser
         val userid = currentUser?.uid
+        parkingList.clear()
         if (userid !== null){
             getParkingList(userid, waitView, emptyView, listView)
         }
@@ -106,11 +108,11 @@ class ParkingListFragment : Fragment(), ParkingListClickListener {
         val usedHandicapSpots = parkingData["usedHandicapSpots"] as Long
         parking.usedSpots = usedSpots.toInt() + usedElectricSpots.toInt() + usedHandicapSpots.toInt()
 
-//        val electricSpotsLong = parkingData["electricSpots"] as Long
-//        val electricSpots = electricSpotsLong.toInt()
-//        val handicapSpotsLong = parkingData["handicapSpots"] as Long
-//        val handicapSpots = handicapSpotsLong.toInt()
-//        FirebaseHelpers.createParkingSpots(parking, handicapSpots, electricSpots)
+        val electricSpotsLong = parkingData["electricSpots"] as Long
+        val electricSpots = electricSpotsLong.toInt()
+        val handicapSpotsLong = parkingData["handicapSpots"] as Long
+        val handicapSpots = handicapSpotsLong.toInt()
+        FirebaseHelpers.createParkingSpots(parking, handicapSpots, electricSpots)
         return parking
     }
 

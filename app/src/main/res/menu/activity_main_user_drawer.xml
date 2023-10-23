@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_map"
             android:title="@string/menu_map" />
         <item
+            android:id="@+id/nav_account"
+            android:icon="@drawable/ic_account"
+            android:title="@string/nav_account" />
+        <item
             android:id="@+id/nav_cars_list"
             android:icon="@drawable/ic_cars"
             android:title="@string/menu_cars" />

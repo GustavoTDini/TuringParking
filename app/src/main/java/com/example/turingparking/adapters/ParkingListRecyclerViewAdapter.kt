@@ -1,7 +1,6 @@
 package com.example.turingparking.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -50,16 +49,20 @@ class ParkingListRecyclerViewAdapter(
         holder.address.text = parking.address
         val usedSpots = parking.usedSpots
         val spots = parking.spots
-        val height = holder.spotBackProgressBar.height
-        val barHeight = ((spots - usedSpots)*height)/spots
-        Log.d(TAG, "onBindViewHolder: $barHeight")
+        val height = holder.redProgressBar.measuredHeight
+        val greenBarHeight = ((spots - usedSpots)*height)/spots
         val width = 48
-        val params = holder.spotProgressBar.layoutParams as ConstraintLayout.LayoutParams
-        params.endToEnd = holder.item.id
-        params.bottomToBottom = holder.item.id
-        params.height = barHeight
-        params.width = width
-        holder.spotProgressBar.requestLayout()
+//        val bitmapRedBar = BitmapFactory.decodeResource(context.resources, R.drawable.round_background_red)
+//        //val bitmapRedBarDraw = ResourcesCompat.getDrawable(context.resources, R.drawable.round_background_red, null) as GradientDrawable
+//        //val bitmapRedBar = bitmapRedBarDraw.toBitmap()
+//        val redBar = Bitmap.createScaledBitmap(bitmapRedBar, width, height, false)
+//        holder.redProgressBar.setImageBitmap(redBar)
+//        val bitmapGreenBar = BitmapFactory.decodeResource(context.resources, R.drawable.round_background_green)
+//        //val bitmapGreenBarDraw = ResourcesCompat.getDrawable(context.resources, R.drawable.round_background_green, null) as GradientDrawable
+//        //val bitmapGreenBar = bitmapGreenBarDraw.toBitmap()
+//        val greenBar = Bitmap.createScaledBitmap(bitmapGreenBar, width, greenBarHeight, false)
+//        holder.greenProgressBar.setImageBitmap(greenBar)
+
 
 //        holder.spotProgressBar.layoutParams = ConstraintLayout.LayoutParams(width, height)
 //        holder.spotProgressBar.layoutParams = ConstraintLayout.LayoutParams
@@ -82,8 +85,8 @@ class ParkingListRecyclerViewAdapter(
         val image: ImageView = binding.parkingListImageView
         val name: TextView = binding.parkingListNameTextView
         val address: TextView = binding.parkingListAddressTextView
-        val spotBackProgressBar: ImageView = binding.spotsProgressBarRed
-        val spotProgressBar: ImageView = binding.spotsProgressBarGreen
+        val redProgressBar: ImageView = binding.spotsProgressBarRed
+        val greenProgressBar: ImageView = binding.spotsProgressBarGreen
         val item: ConstraintLayout = binding.parkingListItem
 
         override fun toString(): String {
@@ -92,7 +95,7 @@ class ParkingListRecyclerViewAdapter(
     }
 
     companion object {
-        private const val TAG = "TransactionListRecyclerViewAdapter"
+        private const val TAG = "ParkingListRecyclerView"
     }
 
 }
