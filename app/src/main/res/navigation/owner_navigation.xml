@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_spots_list" />
 
     <fragment
+        android:id="@+id/nav_finance"
+        android:name="com.example.turingparking.owner_fragments.FinanceReportFragment"
+        android:label="Controle de Vagas"
+        tools:layout="@layout/fragment_finance_report" />
+
+    <fragment
         android:id="@+id/nav_about"
         android:name="com.example.turingparking.fragments.AboutFragment"
         android:label="@string/menu_about"

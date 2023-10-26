@@ -44,6 +44,7 @@ class TransactionListRecyclerViewAdapter(
 
         val credit = 0
         val debit = 1
+        val income = 2
 
         val formatCurrency: NumberFormat = NumberFormat.getCurrencyInstance()
         formatCurrency.maximumFractionDigits = 2
@@ -68,6 +69,12 @@ class TransactionListRecyclerViewAdapter(
             val value = formatCurrency.format(transaction.value)
             holder.value.text = value
             holder.value.setTextColor(context.resources.getColor((R.color.error)))
+        } else if (transaction.type == income){
+            holder.type.setImageResource(R.drawable.ic_money)
+            holder.details.text = "Receita"
+            val value = formatCurrency.format(transaction.value)
+            holder.value.text = value
+            holder.value.setTextColor(context.resources.getColor((R.color.primary)))
         }
     }
 

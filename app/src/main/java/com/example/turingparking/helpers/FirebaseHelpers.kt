@@ -95,7 +95,7 @@ class FirebaseHelpers {
 
         fun checkIfIsFavorite(
             currentUser: FirebaseUser?,
-            parkingId: String?,
+            parkingId: Any?,
             favoriteButton: ImageButton
         ) {
             val db = Firebase.firestore

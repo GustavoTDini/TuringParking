@@ -12,10 +12,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.turingparking.R
+import com.example.turingparking.adapters.FavoritesListAdapter
 import com.example.turingparking.helpers.UIHelpers
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -28,6 +31,8 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private lateinit var db: FirebaseFirestore
     private lateinit var currentEmail: String
     private var selectedLanguage = 0
+    private var selectedAvatar = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
@@ -62,15 +67,19 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 val user = document.data
                 if (user != null){
                     val userName = user["nome"] as String
-                    val userAvatar = user["avatar"] as Long
+                    selectedAvatar = (user["avatar"] as Long).toInt()
                     val userCarId = user["currentCar"] as String
                     val userLanguage = user["language"] as Long
                     selectedLanguage = userLanguage.toInt()
                     val userEmail = user["email"] as String
                     currentEmail = userEmail
                     val userCpf = user["cpf"] as String
-                    val userFavorites = user["favorites"]
+                    val userFavorites = user["favorites"] as ArrayList<*>
                     Log.d(TAG, "onCreateView: $userFavorites")
+                    with(favoritesRecyclerView) {
+                        layoutManager = LinearLayoutManager(context)
+                        adapter = FavoritesListAdapter(userFavorites)
+                    }
                     nameEditText.text = Editable.Factory.getInstance().newEditable(userName)
                     cpfEditText.text = Editable.Factory.getInstance().newEditable(userCpf)
                     emailEditText.text = Editable.Factory.getInstance().newEditable(userEmail)
@@ -99,9 +108,8 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     languageSpinner.setSelection(selectedLanguage)
                     emailUpdateButton.setOnClickListener{
                         it.visibility = View.GONE
-
                     }
-                    avatarImageView.setImageResource(UIHelpers.avatarArray[userAvatar.toInt()])
+                    avatarImageView.setImageResource(UIHelpers.avatarArray[selectedAvatar])
                     db.collection("cars").document(userCarId).get().addOnSuccessListener { document->
                         val car = document.data
                         if (car != null){
@@ -128,12 +136,8 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             electricCarImageView.visibility = View.GONE
                         }
                     }
-
-
                 }
-
             }
-
         }
 
         selectAddCarButton.setOnClickListener{
@@ -142,23 +146,29 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         selectAvatarButton.setOnClickListener{
             val bundle = Bundle()
-            bundle.putInt("currentAvatar", 0)
+            bundle.putInt("currentAvatar", selectedAvatar)
             fragmentView.findNavController().navigate(R.id.nav_avatar, bundle)
         }
 
         updateButton.setOnClickListener{
-            if (userId != null) {
-                db.collection("users").document(userId)
-                    .update("nome", nameEditText.editableText.toString(), "cpf", cpfEditText.editableText.toString(), "language", selectedLanguage)
-                    .addOnSuccessListener {
-                        fragmentView.findNavController().navigate(R.id.nav_map)
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("Confirma as alterações do usuário?")
+                .setCancelable(false)
+                .setPositiveButton("Sim") { _, _ ->
+                    if (userId != null) {
+                        db.collection("users").document(userId)
+                            .update("nome", nameEditText.editableText.toString(), "cpf", cpfEditText.editableText.toString(), "language", selectedLanguage)
+                            .addOnSuccessListener {
+                                fragmentView.findNavController().navigate(R.id.nav_map)
+                            }
                     }
-            }
-
+                }
+                .setNegativeButton("Não") { dialog, _ ->
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
         }
-
-
-
         return fragmentView
     }
 

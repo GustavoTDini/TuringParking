@@ -203,6 +203,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (googleMap != null){
+            setLocation()
+            if(parked){
+                addWalkPositionMark(currentPosition)
+            } else{
+                addCarPositionMark(getCarIcon(currentCarType, currentCarColor), currentPosition)
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun setLocation() {
         fusedLocationClient.lastLocation.addOnCompleteListener(this.requireActivity()) { task ->

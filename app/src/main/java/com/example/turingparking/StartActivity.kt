@@ -25,28 +25,23 @@ class StartActivity : AppCompatActivity() {
         checkPermission(none)
 
         // Funcionalidade para o botão de Login
-        val login_btn = findViewById<Button>(R.id.loginButton)
+        val login_btn = findViewById<Button>(R.id.login_button)
         login_btn.setOnClickListener{
             checkPermission(loginActivity)
         }
 
-        // Funcionalidade para o botão do Facebook - ainda a ser implementada
-        val facebook_btn = findViewById<Button>(R.id.facebookButton)
+        // Funcionalidade para o botão do Google - ainda a ser implementada
+        val facebook_btn = findViewById<Button>(R.id.google_button)
         facebook_btn.setOnClickListener{
             Toast.makeText(this@StartActivity, getString(R.string.facebook_toast), Toast.LENGTH_SHORT).show()
         }
 
         // Funcionalidade para o botão de register
-        val registerButton = findViewById<Button>(R.id.registerButton)
+        val registerButton = findViewById<Button>(R.id.register_button)
         registerButton.setOnClickListener{
             checkPermission(registerActivity)
         }
 
-        // Funcionalidade para o botão de register
-        val permissonButton = findViewById<Button>(R.id.permissonButton)
-        permissonButton.setOnClickListener{
-            requestPermissions(none)
-        }
     }
 
     private fun checkPermission(intentCode: Int) {

@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".user_fragments.AccountFragment">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -208,9 +208,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/account_favorites_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layoutManager="LinearLayoutManager"
-                tools:listitem="@layout/list_item_favorite"/>
+                tools:listitem="@layout/list_item_favorite" />
 
             <Button
                 android:layout_margin="16dp"
@@ -221,6 +221,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>

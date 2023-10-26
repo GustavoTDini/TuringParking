@@ -14,5 +14,4 @@ class Car(var userId: String) {
         return "Car(userId='$userId', id='$id', nick='$nick', plate='$plate', electric=$electric, handicap=$handicap, type=$type, color=$color)"
     }
 
-
 }

@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
-            android:text="Indique um amigo para participar do nosso app e ganhe desconto nas proximas paradas"
+            android:text="Indique um amigo para participar do nosso app e ganhe um crédito de R$20,00 para usar aonde você quiser!"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="24sp"
