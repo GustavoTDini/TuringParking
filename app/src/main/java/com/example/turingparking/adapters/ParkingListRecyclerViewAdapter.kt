@@ -1,9 +1,11 @@
 package com.example.turingparking.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout.LayoutParams
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -48,21 +50,91 @@ class ParkingListRecyclerViewAdapter(
         }
         holder.address.text = parking.address
         val usedSpots = parking.usedSpots
+        Log.d(TAG, "onBindViewHolder used: $usedSpots")
         val spots = parking.spots
-        val height = holder.redProgressBar.measuredHeight
+        Log.d(TAG, "onBindViewHolder spots: $spots")
+        //val height = holder.redProgressBar.measuredHeight
+        val height = 100
+        Log.d(TAG, "onBindViewHolder height: $height")
+        //Log.d(TAG, "onBindViewHolder: $height")
         val greenBarHeight = ((spots - usedSpots)*height)/spots
-        val width = 48
-//        val bitmapRedBar = BitmapFactory.decodeResource(context.resources, R.drawable.round_background_red)
-//        //val bitmapRedBarDraw = ResourcesCompat.getDrawable(context.resources, R.drawable.round_background_red, null) as GradientDrawable
-//        //val bitmapRedBar = bitmapRedBarDraw.toBitmap()
-//        val redBar = Bitmap.createScaledBitmap(bitmapRedBar, width, height, false)
+        //val greenBarHeight = height/2
+        Log.d(TAG, "onBindViewHolder green: $greenBarHeight")
+        val width = 32
+//
+//        val params = holder.greenProgressBar.layoutParams as ViewGroup.MarginLayoutParams
+//        params.setMargins(0,greenBarHeight,16,8)
+//        //apply params
+//        holder.greenProgressBar.layoutParams = params
+        //holder.greenProgressBar.requestLayout()
+
+//        val newLayoutParams = holder.greenProgressBar.updateLayoutParams {
+//            this.height = he
+//        }
+//        newLayoutParams.topMargin = 0
+//        newLayoutParams.leftMargin = 0
+//        newLayoutParams.rightMargin = 0
+//        toolbar.setLayoutParams(newLayoutParams)
+
+//        val  lp = ConstraintLayout.LayoutParams(
+//            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+//            ConstraintLayout.LayoutParams.WRAP_CONTENT).setMargins( 0, height, 16,8)
+//        holder.greenProgressBar.setMargins
+//        holder.greenProgressBar.requestLayout()
+
+
+//        fun View.setMargins(
+//            left: Int = this.marginLeft,
+//            top: Int = this.marginTop,
+//            right: Int = this.marginRight,
+//            bottom: Int = this.marginBottom,
+//        ) {
+//            layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
+//                setMargins(left, top, right, bottom)
+//            }
+//        }
+
+        //val bitmapRedBar = BitmapFactory.decodeResource(context.resources, R.drawable.round_background_red)
+//        val bitmapRedBarDraw = ResourcesCompat.getDrawable(context.resources, R.drawable.red_bar, null) as Drawable
+//        val bitmapRedBar = bitmapRedBarDraw?.toBitmap()
+//        val redBar = bitmapRedBar?.let { Bitmap.createScaledBitmap(it, width, height, false) }
+//        holder.redProgressBar.setImageDrawable(ScaleDrawable(bitmapRedBarDraw, Gravity.BOTTOM,
+//            width.toFloat(), height.toFloat()
+//        ))
+
+//        val bitmapRedBarDraw = ResourcesCompat.getDrawable(context.resources, R.drawable.red_bar, null)
+//        val bitmapRedBar = bitmapRedBarDraw?.toBitmap()
+//        val redBar = bitmapRedBar?.let { Bitmap.createScaledBitmap(it, width, height, false) }
 //        holder.redProgressBar.setImageBitmap(redBar)
-//        val bitmapGreenBar = BitmapFactory.decodeResource(context.resources, R.drawable.round_background_green)
-//        //val bitmapGreenBarDraw = ResourcesCompat.getDrawable(context.resources, R.drawable.round_background_green, null) as GradientDrawable
+//
+//        val bitmapGreenBarDraw = ResourcesCompat.getDrawable(context.resources, R.drawable.green_bar, null)
+//        val bitmapGreenBar = bitmapGreenBarDraw?.toBitmap()
+//        val greenBar = bitmapGreenBar?.let { Bitmap.createScaledBitmap(it, width, greenBarHeight, false) }
+//        holder.greenProgressBar.setImageBitmap(greenBar)
+        holder.greenProgressBar.layoutParams = (LayoutParams(32,50))
+        holder.greenProgressBar.requestLayout()
+
+
+
+
+//            ScaleDrawable(bitmapGreenBarDraw, Gravity.BOTTOM,
+//            width.toFloat(), greenBarHeight.toFloat()
+//        )
+//        )
+
+
+//        //val bitmapGreenBar = BitmapFactory.decodeResource(context.resources, R.drawable.round_background_green)
+//        val bitmapGreenBar = ResourcesCompat.getDrawable(context.resources, R.drawable.green_bar, null)
 //        //val bitmapGreenBar = bitmapGreenBarDraw.toBitmap()
 //        val greenBar = Bitmap.createScaledBitmap(bitmapGreenBar, width, greenBarHeight, false)
 //        holder.greenProgressBar.setImageBitmap(greenBar)
-
+//        bitmapGreenBarDraw.bounds = Rect(0,0,height, width)
+//        bitmapGreenBarDraw.bounds = Rect(0,0,greenBarHeight, width)
+//        holder.redProgressBar.setImageDrawable(bitmapRedBarDraw)
+//        holder.greenProgressBar.setImageDrawable(bitmapGreenBarDraw)
+        //
+        //holder.greenProgressBar.setImageBitmap(ScaleDrawable(bitmapGreenBarDraw,Gravity.BOTTOM, 0.5f, 1f))
+        //
 
 //        holder.spotProgressBar.layoutParams = ConstraintLayout.LayoutParams(width, height)
 //        holder.spotProgressBar.layoutParams = ConstraintLayout.LayoutParams

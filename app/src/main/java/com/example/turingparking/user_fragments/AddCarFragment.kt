@@ -57,8 +57,9 @@ class AddCarFragment : Fragment(), AdapterView.OnItemSelectedListener {
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             typeSpinner.adapter = adapter
+            typeSpinner.onItemSelectedListener = this
         }
-        typeSpinner.onItemSelectedListener = this
+
         colorSpinner = fragmentView.findViewById(R.id.spinner_color)
         ArrayAdapter.createFromResource(
             requireContext(),
@@ -67,8 +68,9 @@ class AddCarFragment : Fragment(), AdapterView.OnItemSelectedListener {
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             colorSpinner.adapter = adapter
+            colorSpinner.onItemSelectedListener = this
         }
-        colorSpinner.onItemSelectedListener = this
+
 
         val handicapSwitch = fragmentView.findViewById<View>(R.id.switch_handicap) as SwitchCompat
         handicapSwitch.isChecked = handicap

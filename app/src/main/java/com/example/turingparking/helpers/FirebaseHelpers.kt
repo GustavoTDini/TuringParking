@@ -16,6 +16,7 @@ import com.example.turingparking.firebase_classes.Pix
 import com.example.turingparking.firebase_classes.Spots
 import com.example.turingparking.helpers.Helpers.Companion.definePriority
 import com.example.turingparking.user_fragments.AddCarFragment
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -90,6 +91,38 @@ class FirebaseHelpers {
                     favoriteButton.setImageResource(R.drawable.full_star)
                     favoriteButton.tag = "full"
                 }
+        }
+
+        fun checkIfIsFavorite(
+            currentUser: FirebaseUser?,
+            parkingId: String?,
+            favoriteButton: ImageButton
+        ) {
+            val db = Firebase.firestore
+            db.collection("users").document(currentUser?.uid.toString())
+                .get().addOnSuccessListener { document ->
+                    val favoritesList = document.get("favorites") as List<*>
+                    if (favoritesList.contains(parkingId)) {
+                        favoriteButton.setImageResource(R.drawable.full_star)
+                        favoriteButton.tag = "full"
+                    } else {
+                        favoriteButton.setImageResource(R.drawable.empty_star)
+                        favoriteButton.tag = "empty"
+                    }
+                }
+        }
+
+        fun setFavorite(
+            favoriteButton: ImageButton,
+            currentUser: FirebaseUser?,
+            parkingId: String
+        ) {
+            val userId = currentUser?.uid.toString()
+            if (favoriteButton.tag == "empty") {
+                favoritePark(userId, parkingId, favoriteButton)
+            } else if (favoriteButton.tag == "full") {
+                unfavoritePark(userId, parkingId, favoriteButton)
+            }
         }
 
         fun saveCar(

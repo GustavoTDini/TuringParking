@@ -24,6 +24,7 @@ import com.example.turingparking.MyApplication
 import com.example.turingparking.R
 import com.example.turingparking.helpers.FirebaseHelpers
 import com.example.turingparking.helpers.TuringSharing
+import com.example.turingparking.helpers.UIHelpers
 import com.example.turingparking.helpers.UIHelpers.Companion.getCarIcon
 import com.example.turingparking.user.ParkingViewActivity
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -39,7 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.RoundCap
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -56,7 +57,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var googleMap: GoogleMap? = null
     private var currentPosition: LatLng = LatLng(-23.550244, -46.633908)
-    private lateinit var cancelFab: FloatingActionButton
+    private lateinit var cancelFab: ExtendedFloatingActionButton
     private var carPositionMarker: Marker? = null
     private var walkPositionMarker: Marker? = null
     private var routePolyLine: Polyline? = null
@@ -119,7 +120,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                             } else{
                                 cancelFab.visibility = View.GONE
                                 addCarPositionMark(getCarIcon(currentCarType, currentCarColor), LatLng(latitudeDest, longitudeDest))
-                                addWalkPositionMark(R.drawable.avatar_1,currentPosition)
+                                addWalkPositionMark(currentPosition)
                             }
                         }
                     }else{
@@ -141,7 +142,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         savedInstanceState: Bundle?
     ): View {
         val fragmentView: View = inflater.inflate(R.layout.fragment_maps, container, false)
-        cancelFab = fragmentView.findViewById(R.id.map_view_cancel_fab) as FloatingActionButton
+        cancelFab = fragmentView.findViewById(R.id.map_view_cancel_fab) as ExtendedFloatingActionButton
         cancelFab.setOnClickListener {
             Log.d(TAG, "onCreateView spot: $spotId")
             Log.d(TAG, "onCreateView reserve: $reserveId")
@@ -196,7 +197,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onLocationChanged(p0: Location) {
         setLocation()
         if(parked){
-            addWalkPositionMark(R.drawable.avatar_1,currentPosition)
+            addWalkPositionMark(currentPosition)
         } else{
             addCarPositionMark(getCarIcon(currentCarType, currentCarColor), currentPosition)
         }
@@ -241,21 +242,27 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         moveToLocation()
     }
 
-    private fun addWalkPositionMark(drawable: Int, position: LatLng) {
+    private fun addWalkPositionMark(position: LatLng) {
+        val userId = auth.currentUser?.uid.toString()
+        var avatar = 0
         walkPositionMarker?.remove()
-        val height = 150
-        val width = 150
-        val bitmapDraw = ResourcesCompat.getDrawable(resources,drawable, null) as BitmapDrawable
-        val bitmap = bitmapDraw.bitmap
-        val marker = Bitmap.createScaledBitmap(bitmap, width, height, false)
-        walkPositionMarker = googleMap?.addMarker(
-            MarkerOptions()
-                .position(position)
-                .icon(BitmapDescriptorFactory.fromBitmap(marker))
-                .anchor(0.5f, 0.5f)
-                .draggable(true)
-        )
-        walkPositionMarker?.hideInfoWindow()
+        db.collection("users").document(userId).get().addOnSuccessListener {
+            avatar = (it.data?.get("avatar") as Number).toInt()
+            val avatarResource = UIHelpers.avatarArray[avatar]
+            val height = 150
+            val width = 150
+            val bitmapDraw = ResourcesCompat.getDrawable(resources,avatarResource, null) as BitmapDrawable
+            val bitmap = bitmapDraw.bitmap
+            val marker = Bitmap.createScaledBitmap(bitmap, width, height, false)
+            walkPositionMarker = googleMap?.addMarker(
+                MarkerOptions()
+                    .position(position)
+                    .icon(BitmapDescriptorFactory.fromBitmap(marker))
+                    .anchor(0.5f, 0.5f)
+                    .draggable(true)
+            )
+            walkPositionMarker?.hideInfoWindow()
+        }
     }
 
     private fun addMarkers() {
@@ -365,7 +372,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                             FirebaseHelpers.updateEstimatedArrivalTime(reserveId, spotId, estimatedTime)
                         }
                     }
-                    if (System.currentTimeMillis() > refreshTime!!){
+                    if (System.currentTimeMillis() > refreshTime){
                         FirebaseHelpers.updateEstimatedArrivalTime(reserveId, spotId, estimatedTime)
                         val nextRefreshTime = System.currentTimeMillis() + 60000
                         turingSharing.setEstimatedTimeClock(nextRefreshTime)

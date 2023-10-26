@@ -119,7 +119,7 @@
                     style="@android:style/Widget.DeviceDefault.Light.RatingBar.Indicator"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
-                    android:isIndicator="false"
+                    android:isIndicator="true"
                     android:max="10"
                     android:numStars="5"
                     android:progress="7"

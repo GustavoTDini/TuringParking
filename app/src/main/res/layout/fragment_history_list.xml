@@ -3,13 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/history_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".user_fragments.StopsHistoryFragment">
 
+    <ProgressBar
+        android:id="@+id/wait_state_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="120dp"
+        android:gravity="center_horizontal"
+        android:visibility="visible"/>
+
     <LinearLayout
-        android:id="@+id/empty"
+        android:id="@+id/empty_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/primary_container"
@@ -18,7 +25,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -37,18 +45,19 @@
             android:textSize="24sp"
             android:textAlignment="center"
             android:textStyle="bold" />
-
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/history_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".user_fragments.StopsHistoryFragment"
-        tools:listitem="@layout/list_item_history" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/list_item_history"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -78,7 +78,7 @@ class ParkingListFragment : Fragment(), ParkingListClickListener {
                 }
                 columnCount = parkingList.size
                 waitView.visibility = View.GONE
-                setVisibility(emptyView, listView)
+                setParkingListVisibility(emptyView, listView)
             }.addOnFailureListener { exception ->
                 Log.w(CarListFragment.TAG, "Error getting documents: ", exception)
             }
@@ -116,7 +116,7 @@ class ParkingListFragment : Fragment(), ParkingListClickListener {
         return parking
     }
 
-    private fun setVisibility(
+    private fun setParkingListVisibility(
         emptyView: LinearLayout,
         listView: RecyclerView
     ) {
@@ -125,8 +125,9 @@ class ParkingListFragment : Fragment(), ParkingListClickListener {
             listView.visibility = View.GONE
         } else {
             emptyView.visibility = View.GONE
-            listView.adapter = ParkingListRecyclerViewAdapter(parkingList, this)
             listView.visibility = View.VISIBLE
+            listView.adapter = ParkingListRecyclerViewAdapter(parkingList, this)
+
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.turingparking.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +29,6 @@ class CarListRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val car = values[position]
-        Log.d(TAG, "onBindViewHolder: $car")
         holder.nick.text = car.nick
         holder.plate.text = car.plate
         if (!car.electric) {

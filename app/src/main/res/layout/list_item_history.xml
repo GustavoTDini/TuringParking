@@ -1,27 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:id="@+id/history_list_item">
 
-    <TextView
-        android:id="@+id/date_time"
+    <View
+        android:id="@+id/history_list_divider"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_height="2dp"
+        android:layout_marginTop="4dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <ImageView
+        android:id="@+id/history_list_image_view"
+        android:layout_width="100dp"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/parking_image_placeholder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/parking_name"
-        android:layout_width="wrap_content"
+        android:id="@+id/history_list_date_time"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:text="Estacionado das 00:00 as 00:00"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/history_list_price_text_view"
+        app:layout_constraintStart_toEndOf="@+id/history_list_image_view"
+        app:layout_constraintTop_toBottomOf="@+id/history_list_parking_name_text_view"
+        app:layout_constraintVertical_bias="0.321" />
 
     <TextView
-        android:id="@+id/preco"
-        android:layout_width="wrap_content"
+        android:id="@+id/history_list_parking_name_text_view"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Estacionamento"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/price_label"
+        app:layout_constraintStart_toEndOf="@+id/history_list_image_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/history_list_price_text_view"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:text="R$ 20,00"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceListItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/price_label" />
+
+    <TextView
+        android:id="@+id/price_label"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Valor"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/history_list_rating_view"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/history_list_image_view"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/rating_label"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Sua Nota"
+            android:textAlignment="center"
+            android:textSize="12sp" />
+
+        <RatingBar
+            android:id="@+id/history_list_rating_bar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:isIndicator="true"
+            android:max="10"
+            android:numStars="5"
+            android:paddingHorizontal="10dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/history_list_not_rated"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:text="Parada ainda não avaliada!"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/history_list_image_view"
+        android:visibility="gone"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

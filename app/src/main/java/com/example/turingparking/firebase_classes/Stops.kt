@@ -19,7 +19,7 @@ class Stops(var userId: String){
     var timeOfReserveCancel: Long = 0
     var timeOfLeave: Long = 0
     var estimatedTimeOfArrive: Long = 0
-    var rating: Int = 0
+    var rating: Double = 0.0
     var latitude: Double = 0.0
     var longitude: Double = 0.0
 

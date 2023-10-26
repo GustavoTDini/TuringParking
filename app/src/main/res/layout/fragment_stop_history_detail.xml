@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".user_fragments.StopHistoryDetailFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/stop_details_name_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Nome do estacionamento"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/stop_details_address_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:layout_marginHorizontal="8dp"
+                android:text="Endereço"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_margin="8dp"
+                android:background="@color/secondary_container"
+                android:padding="12dp"
+                android:translationZ="16dp">
+
+                <ImageView
+                    android:id="@+id/stop_details_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="60dp"
+                    android:translationZ="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/parking_image_placeholder" />
+
+                <LinearLayout
+                    android:id="@+id/stop_details_insurance_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:translationZ="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:srcCompat="@drawable/insured" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Com Seguro"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/stop_details_fav_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:elevation="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/empty_star"
+                    android:tag="empty"
+                    android:translationZ="32dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/stop_details_image_view" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="8dp"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/stop_detail_evaluate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:text="Avalie este Estacionamento"/>
+
+                <RatingBar
+                    android:id="@+id/stop_details_rating_bar"
+                    style="@style/Widget.AppCompat.RatingBar"
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
+                    android:max="10"
+                    android:numStars="5"
+                    android:progress="5"
+                    android:stepSize=".5" />
+
+                <Button
+                    android:id="@+id/stop_details_evaluate_button"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:text="Avaliar" />
+
+                <TextView
+                    android:id="@+id/stop_detail_thank"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:text="Obrigado pela Sua Avaliação"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Mapa"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/detail_map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:context=".owner_fragments.AddMapFragment"/>
+
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Seu Carro"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <ImageView
+                    android:id="@+id/stop_details_electric_icon_image_view"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/stop_details_car_nick_text_view"
+                    app:srcCompat="@drawable/electric_icon" />
+
+                <ImageView
+                    android:id="@+id/stop_details_handicap_icon_image_view"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/stop_details_car_nick_text_view"
+                    app:srcCompat="@drawable/handicap_icon"
+                    tools:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/stop_details_car_icon_image_view"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/blue_car"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/stop_details_car_nick_text_view" />
+
+                <TextView
+                    android:id="@+id/stop_details_car_nick_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/primary"
+                android:padding="4dp"
+                android:text="Resumo da sua Parada"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/stop_details_summary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:padding="16dp"
+                    android:layout_margin="8dp"
+                    android:text="Detalhes da parada nhdslfhsdgdsjkljklahdjkghsdjkfhjasdkhjcxkbjvhdsvc dbfjdih uiehfuhsdn shdjk gdskj gdsjk l" />
+
+            <Button
+                android:layout_margin="16dp"
+                android:id="@+id/stop_details_invoice_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Gerar Nota Fiscal" />
+
+            <Button
+                android:layout_margin="16dp"
+                android:id="@+id/stop_details_back_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Retornar" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</FrameLayout>

@@ -30,7 +30,7 @@ import com.google.firebase.ktx.Firebase
  */
 class CarListFragment : Fragment(), CarListClickListener{
 
-    private var columnCount = 0
+    private var listSize = 0
     private var carList = ArrayList<Car>()
     private lateinit var listView: RecyclerView
     private lateinit var db: FirebaseFirestore
@@ -51,19 +51,19 @@ class CarListFragment : Fragment(), CarListClickListener{
         currentUser = auth.currentUser!!
         val turingSharing = TuringSharing(MyApplication.applicationContext())
         currentCarId = turingSharing.getCarId().toString()
-        val view = inflater.inflate(R.layout.fragment_car_list, container, false)
-        listView = view.findViewById(R.id.car_recycler_view)
-        val emptyView = view.findViewById<LinearLayout>(R.id.empty_car_list)
+        val fragmentView = inflater.inflate(R.layout.fragment_car_list, container, false)
+        listView = fragmentView.findViewById(R.id.car_recycler_view)
+        val emptyView = fragmentView.findViewById<LinearLayout>(R.id.empty_car_list)
         carList.clear()
         createList(currentUser, emptyView, listView)
 
-        val addCarButton = view.findViewById<FloatingActionButton>(R.id.add_car_fab)
+        val addCarButton = fragmentView.findViewById<FloatingActionButton>(R.id.add_car_fab)
 
         addCarButton.setOnClickListener {
-            view.findNavController().navigate(R.id.nav_add_cars)
+            fragmentView.findNavController().navigate(R.id.nav_add_cars)
         }
 
-        return view
+        return fragmentView
     }
 
     private fun createList(
@@ -80,8 +80,8 @@ class CarListFragment : Fragment(), CarListClickListener{
                     val car = createCar(document.data, userid)
                     carList.add(car)
                 }
-                columnCount = carList.size
-                if (columnCount == 0) {
+                listSize = carList.size
+                if (listSize == 0) {
                     emptyView.visibility = View.VISIBLE
                     listView.visibility = View.GONE
                 } else {
@@ -107,7 +107,6 @@ class CarListFragment : Fragment(), CarListClickListener{
     }
 
     override fun onCarListItemClick(view: View, id: String) {
-        Log.d(TAG, "onCarListItemClick: $id")
         val turingSharing = TuringSharing(MyApplication.applicationContext())
         turingSharing.setCarId(id)
         currentCarId = id

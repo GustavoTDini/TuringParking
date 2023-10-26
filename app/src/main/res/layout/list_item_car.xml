@@ -12,6 +12,7 @@
         android:layout_height="56dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
+        android:layout_marginStart="16dp"
         android:src="@drawable/blue_car"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,8 +98,8 @@
         android:id="@+id/handicap_icon_image_view"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/car_icon_image_view"
         app:layout_constraintStart_toStartOf="@+id/car_icon_image_view"
+        app:layout_constraintTop_toTopOf="@+id/car_icon_image_view"
         app:srcCompat="@drawable/handicap_icon" />
 
     <View

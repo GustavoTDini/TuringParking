@@ -22,7 +22,6 @@ import com.example.turingparking.helpers.FirebaseHelpers
 import com.example.turingparking.helpers.Helpers
 import com.example.turingparking.helpers.TuringSharing
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -125,8 +124,8 @@ class ParkingViewActivity : AppCompatActivity() {
                         val usedHandicapSpots = usedHandicapSpotsLong.toInt()
                         val evaluationsLong = parkingData["evaluations"] as Long
                         val evaluations = evaluationsLong.toInt()
-                        val ratingLong = parkingData["rating"] as Long
-                        val rating = ratingLong.toInt()
+                        val ratingLong = parkingData["rating"] as Number
+                        val rating = ratingLong.toDouble()
                         val imageUrl = parkingData["imageUri"] as String
 
                         if (insured){
@@ -141,7 +140,7 @@ class ParkingViewActivity : AppCompatActivity() {
                         addressTextView.text = address
 
                         if (evaluations <= 0){
-                            ratingsView.visibility = View.VISIBLE
+                            ratingsView.visibility = View.GONE
                             newParkingTextView.visibility = View.VISIBLE
                         } else {
                             ratingsView.visibility = View.VISIBLE
@@ -213,10 +212,10 @@ class ParkingViewActivity : AppCompatActivity() {
                                 .into(parkingImageView)
                         }
 
-                        checkIfIsFavorite(currentUser, parkingId, favoriteButton)
+                        FirebaseHelpers.checkIfIsFavorite(currentUser, parkingId, favoriteButton)
 
                         favoriteButton.setOnClickListener{
-                            setFavorite(favoriteButton, currentUser, parkingId)
+                            FirebaseHelpers.setFavorite(favoriteButton, currentUser, parkingId)
                         }
 
                         bookingButton.setOnClickListener{
@@ -306,36 +305,9 @@ class ParkingViewActivity : AppCompatActivity() {
         alert.show()
     }
 
-    private fun checkIfIsFavorite(
-        currentUser: FirebaseUser?,
-        parkingId: String?,
-        favoriteButton: ImageButton
-    ) {
-        db.collection("users").document(currentUser?.uid.toString())
-            .get().addOnSuccessListener { document ->
-                val favoritesList = document.get("favorites") as List<*>
-                if (favoritesList.contains(parkingId)) {
-                    favoriteButton.setImageResource(R.drawable.full_star)
-                    favoriteButton.tag = "full"
-                } else {
-                    favoriteButton.setImageResource(R.drawable.empty_star)
-                    favoriteButton.tag = "empty"
-                }
-            }
-    }
 
-    private fun setFavorite(
-        favoriteButton: ImageButton,
-        currentUser: FirebaseUser?,
-        parkingId: String
-    ) {
-        val userId = currentUser?.uid.toString()
-        if (favoriteButton.tag == "empty") {
-            FirebaseHelpers.favoritePark(userId, parkingId, favoriteButton)
-        } else if (favoriteButton.tag == "full") {
-            FirebaseHelpers.unfavoritePark(userId, parkingId, favoriteButton)
-        }
-    }
+
+
 
     private fun getCarDetails() {
         db.collection("cars").document(carId).get()

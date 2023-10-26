@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.turingparking.data.User
 import com.example.turingparking.helpers.TuringSharing
 import com.google.android.recaptcha.Recaptcha
 import com.google.android.recaptcha.RecaptchaAction
@@ -25,7 +24,6 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
 
     var loginLayout: LinearLayout? = null
-    var user: User? = null
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var recaptchaClient: RecaptchaClient

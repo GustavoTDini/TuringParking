@@ -12,18 +12,21 @@
         tools:context=".user_fragments.MapsFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/map_view_cancel_fab"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Cancelar Reserva"
-        app:extendStrategy="wrap_content"
-        style="@style/TextAppearance.AppCompat.Medium"
+        android:backgroundTint="@color/error"
+        app:icon="@drawable/ic_x_cancel"
+        app:iconTint="@color/white"
+        android:text="Cancelar"
         android:textColor="@color/white"
+        android:elevation="16dp"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

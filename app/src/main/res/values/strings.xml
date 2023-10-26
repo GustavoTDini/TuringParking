@@ -67,6 +67,13 @@
         <item>SUV</item>
         <item>Picape</item>
     </string-array>
+
+    <string-array name="languages_array">
+        <item>Português</item>
+        <item>Inglês</item>
+        <item>Alemão</item>
+    </string-array>
+
     <string-array name="colors_array">
         <item>Preto</item>
         <item>Branco</item>
