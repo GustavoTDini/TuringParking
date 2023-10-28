@@ -125,9 +125,9 @@ class LoginActivity : AppCompatActivity() {
             .document(auth.currentUser?.uid.toString())
             .get()
             .addOnSuccessListener { document ->
-                val car = document.data
-                if (car != null){
-                    val carId = car["currentCar"] as String
+                val user = document.data
+                if (user != null) {
+                    val carId = user["currentCar"] as String
                     val turingSharing = TuringSharing(MyApplication.applicationContext())
                     turingSharing.setCarId(carId)
                 }

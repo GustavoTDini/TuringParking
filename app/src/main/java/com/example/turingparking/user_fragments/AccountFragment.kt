@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -32,6 +33,7 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private lateinit var currentEmail: String
     private var selectedLanguage = 0
     private var selectedAvatar = 0
+    private var code = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,18 +46,27 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+        var exists = false
+        var newEmail = ""
+
         val fragmentView = inflater.inflate(R.layout.fragment_account, container, false)
-        val selectAvatarButton = fragmentView.findViewById<Button>(R.id.account_avatar_change_button)
-        val selectAddCarButton = fragmentView.findViewById<Button>(R.id.account_add_change_car_button)
+        val selectAvatarButton =
+            fragmentView.findViewById<Button>(R.id.account_avatar_change_button)
+        val selectAddCarButton =
+            fragmentView.findViewById<Button>(R.id.account_add_change_car_button)
         val avatarImageView = fragmentView.findViewById<ImageView>(R.id.account_avatar_image_view)
         val carImageView = fragmentView.findViewById<ImageView>(R.id.account_car_image_view)
-        val electricCarImageView = fragmentView.findViewById<ImageView>(R.id.account_electric_icon_image_view)
-        val handicapCarImageView = fragmentView.findViewById<ImageView>(R.id.account_handicap_icon_image_view)
+        val electricCarImageView =
+            fragmentView.findViewById<ImageView>(R.id.account_electric_icon_image_view)
+        val handicapCarImageView =
+            fragmentView.findViewById<ImageView>(R.id.account_handicap_icon_image_view)
         val nameEditText = fragmentView.findViewById<EditText>(R.id.account_name_edit_text)
         val cpfEditText = fragmentView.findViewById<EditText>(R.id.account_cpf_edit_text)
         val emailEditText = fragmentView.findViewById<EditText>(R.id.account_email_edit_text)
         val emailUpdateButton = fragmentView.findViewById<Button>(R.id.account_update_email_button)
         val codeEditText = fragmentView.findViewById<EditText>(R.id.account_code_edit_text)
+        val codeConfirmButton = fragmentView.findViewById<Button>(R.id.account_confirm_code_button)
         val languageSpinner = fragmentView.findViewById<Spinner>(R.id.account_language_spinner)
         val favoritesRecyclerView = fragmentView.findViewById<RecyclerView>(R.id.account_favorites_recycler)
         val updateButton = fragmentView.findViewById<Button>(R.id.account_update_button)
@@ -75,7 +86,6 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     currentEmail = userEmail
                     val userCpf = user["cpf"] as String
                     val userFavorites = user["favorites"] as ArrayList<*>
-                    Log.d(TAG, "onCreateView: $userFavorites")
                     with(favoritesRecyclerView) {
                         layoutManager = LinearLayoutManager(context)
                         adapter = FavoritesListAdapter(userFavorites)
@@ -83,18 +93,13 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     nameEditText.text = Editable.Factory.getInstance().newEditable(userName)
                     cpfEditText.text = Editable.Factory.getInstance().newEditable(userCpf)
                     emailEditText.text = Editable.Factory.getInstance().newEditable(userEmail)
-                    if (emailEditText.editableText.toString() != currentEmail){
-                        emailUpdateButton.visibility = View.VISIBLE
-                    } else{
-                        emailUpdateButton.visibility = View.GONE
-                    }
-                    emailEditText.setOnEditorActionListener { it, i, keyEvent ->
-                        if(it.editableText.toString() != currentEmail){
-                            emailUpdateButton.visibility = View.VISIBLE
-                        } else{
-                            emailUpdateButton.visibility = View.GONE
-                        }
-                        return@setOnEditorActionListener true
+                    emailEditText.isEnabled = false
+                    emailUpdateButton.setOnClickListener {
+                        Toast.makeText(
+                            requireContext(),
+                            "Função ainda a ser implementada!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                     ArrayAdapter.createFromResource(
                         requireContext(),
@@ -106,9 +111,6 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         languageSpinner.onItemSelectedListener = this
                     }
                     languageSpinner.setSelection(selectedLanguage)
-                    emailUpdateButton.setOnClickListener{
-                        it.visibility = View.GONE
-                    }
                     avatarImageView.setImageResource(UIHelpers.avatarArray[selectedAvatar])
                     db.collection("cars").document(userCarId).get().addOnSuccessListener { document->
                         val car = document.data
@@ -169,6 +171,94 @@ class AccountFragment : Fragment(), AdapterView.OnItemSelectedListener {
             val alert = builder.create()
             alert.show()
         }
+
+//        emailEditText.setOnEditorActionListener { it, i, keyEvent ->
+//            if(it.editableText.toString() != currentEmail){
+//                emailUpdateButton.visibility = View.VISIBLE
+//            } else{
+//                emailUpdateButton.visibility = View.GONE
+//            }
+//            return@setOnEditorActionListener true
+//        }
+//        emailUpdateButton.setOnClickListener {
+//            newEmail = emailEditText.editableText.toString()
+//            db.collection("users").whereEqualTo("email", newEmail).get()
+//                .addOnSuccessListener { documents ->
+//                    exists = !documents.isEmpty
+//                    Log.d(TAG, "onCreateView: $exists")
+//                    if (!newEmail.matches(emailRegex.toRegex())) {
+//                        Toast.makeText(
+//                            requireContext(),
+//                            "Por Favor coloque um e-mail válido",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    } else if (exists) {
+//                        Toast.makeText(
+//                            requireContext(),
+//                            "Usuário com email já existente!",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    } else {
+//                        code = Helpers.createCode(5)
+//                        MailHelpers.sendMailUsingVolley(
+//                            newEmail,
+//                            code,
+//                            MailHelpers.change,
+//                            requireContext()
+//                        )
+//                        emailUpdateButton.visibility = View.GONE
+//                        codeEditText.visibility = View.VISIBLE
+//                        codeConfirmButton.visibility = View.VISIBLE
+//                    }
+//
+//                    Log.w(TAG, "Query Finished $exists")
+//                }
+//                .addOnFailureListener { exception ->
+//                    Log.w(TAG, "Error getting documents: ", exception)
+//                }
+//        }
+//            Log.d(TAG, "onCreateView: click")
+//            db.collection("users").whereEqualTo("email", emailEditText.editableText.toString())
+//                .get().addOnSuccessListener { document->
+//                    val users = document.documents
+//                    Log.d(TAG, "onCreateView: $users")
+//                    if (users.isEmpty()){
+//                        Log.d(TAG, "onCreateView: Empty")
+//                        code = Helpers.createCode(5)
+//                        MailHelpers.sendMailUsingVolley(emailEditText.editableText.toString(), code, MailHelpers.change, requireContext())
+//                        emailUpdateButton.visibility = View.GONE
+//                        codeEditText.visibility = View.VISIBLE
+//                        codeConfirmButton.visibility = View.VISIBLE
+//                    } else{
+//                        Toast.makeText(requireContext(), "E-mail já cadastrado!", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//        }
+//        codeConfirmButton.setOnClickListener {
+//            val editedCode = codeEditText.editableText.toString()
+//            if (editedCode == code){
+//                Log.d(TAG, "onCreateView: $editedCode")
+//                val currentUser = auth.currentUser
+//                currentUser?.updateEmail(newEmail)
+//                    ?.addOnSuccessListener {
+//                        Log.d(TAG, "onCreateView: teste")
+//                        db.collection("user").document(currentUser.uid).update(
+//                            "email", newEmail
+//                        ).addOnSuccessListener {
+//                            emailUpdateButton.visibility = View.GONE
+//                            codeEditText.visibility = View.GONE
+//                            codeConfirmButton.visibility = View.GONE
+//                        }
+//                    }?.addOnFailureListener {
+//                        Log.e(TAG, "onCreateView: $it", )
+//                    }
+//
+//
+//            } else{
+//                Toast.makeText(requireContext(), "Código incorreto!", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+
         return fragmentView
     }
 

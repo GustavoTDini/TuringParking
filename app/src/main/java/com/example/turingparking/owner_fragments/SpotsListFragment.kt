@@ -15,6 +15,7 @@ import com.example.turingparking.R
 import com.example.turingparking.adapters.SpotsListRecyclerViewAdapter
 import com.example.turingparking.firebase_classes.Car
 import com.example.turingparking.firebase_classes.Spots
+import com.example.turingparking.helpers.FirebaseHelpers
 import com.example.turingparking.helpers.Helpers.Companion.defineCost
 import com.example.turingparking.helpers.Helpers.Companion.definePriority
 import com.example.turingparking.helpers.SpotListClickListener
@@ -171,7 +172,7 @@ class SpotsListFragment : Fragment(), SpotListClickListener {
                             val priority = definePriority(spot.electric, spot.preferential, false, false)
                             updateLeaveStop(spot.reserveId, currentTime, cost)
                             updateLeaveSpot(spot.id, currentTime, priority)
-                            decrementUsedParkingSpot(spot.parkingId, usedSpot)
+                            FirebaseHelpers.decrementUsedParkingSpot(spot.parkingId, usedSpot)
                             spendWallet(car.userId, cost)
                         } else {
                             Toast.makeText(
@@ -265,13 +266,6 @@ class SpotsListFragment : Fragment(), SpotListClickListener {
             .update("occupied", false, "active", false, "finalized", true, "timeOfLeave", leaveTime, "cost", cost)
     }
 
-    private fun decrementUsedParkingSpot(parkingId: String, spotType: String) {
-        val db = Firebase.firestore
-        db.collection("parkings").document(parkingId)
-            .update(
-                spotType, FieldValue.increment(-1)
-            )
-    }
 
     companion object{
         private const val TAG = "SpotsListFragment"

@@ -1,6 +1,7 @@
 package com.example.turingparking.user
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -11,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NavUtils
@@ -33,6 +35,7 @@ import java.text.NumberFormat
 import java.util.Currency
 import java.util.UUID
 
+
 class ParkingViewActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
@@ -52,7 +55,9 @@ class ParkingViewActivity : AppCompatActivity() {
 
         val turingSharing = TuringSharing(MyApplication.applicationContext())
         carId = turingSharing.getCarId().toString()
-        getCarDetails()
+        if (carId.isNotEmpty()) {
+            getCarDetails()
+        }
 
         val format: NumberFormat = NumberFormat.getCurrencyInstance()
         format.maximumFractionDigits = 2
@@ -218,37 +223,46 @@ class ParkingViewActivity : AppCompatActivity() {
                             FirebaseHelpers.setFavorite(favoriteButton, currentUser, parkingId)
                         }
 
-                        bookingButton.setOnClickListener{
-                            Log.d(TAG, "onCreate: Booking")
-                            val id = UUID.randomUUID().toString()
-                            val stop = Stops(currentUser?.uid.toString())
-                            stop.active = true
-                            stop.parkingId = parkingId
-                            stop.id = id
-                            stop.carId = carId
-                            stop.latitude = latitude
-                            stop.longitude = longitude
-                            stop.reserved = true
-                            stop.timeOfReserve = System.currentTimeMillis()
-                            if (electricCar){
-                                Log.d(TAG, "onCreate: ElectricCar")
-                                if (availableElectricSpots <= 0){
-                                    openElectricCarDialog(stop, name, id, parkingId)
-                                } else{
-                                    stop.electric = true
+                        bookingButton.setOnClickListener {
+                            if (carId.isEmpty()) {
+                                Toast.makeText(
+                                    this,
+                                    "Cadastre um Veículo para estacionar",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val mainIntent = Intent(this, MainUserActivity::class.java)
+                                startActivity(mainIntent)
+                            } else {
+                                val id = UUID.randomUUID().toString()
+                                val stop = Stops(currentUser?.uid.toString())
+                                stop.active = true
+                                stop.parkingId = parkingId
+                                stop.id = id
+                                stop.carId = carId
+                                stop.latitude = latitude
+                                stop.longitude = longitude
+                                stop.reserved = true
+                                stop.timeOfReserve = System.currentTimeMillis()
+                                if (electricCar) {
+                                    Log.d(TAG, "onCreate: ElectricCar")
+                                    if (availableElectricSpots <= 0) {
+                                        openElectricCarDialog(stop, name, id, parkingId)
+                                    } else {
+                                        stop.electric = true
+                                        confirmReserve(name, id, stop, parkingId)
+                                    }
+                                } else if (handicapCar) {
+                                    Log.d(TAG, "onCreate: HandicapCar")
+                                    if (availableHandicapSpots <= 0) {
+                                        openHandicapCarDialog(stop, name, id, parkingId)
+                                    } else {
+                                        stop.preferential = true
+                                        confirmReserve(name, id, stop, parkingId)
+                                    }
+                                } else {
+                                    Log.d(TAG, "onCreate: Plain")
                                     confirmReserve(name, id, stop, parkingId)
                                 }
-                            } else if (handicapCar){
-                                Log.d(TAG, "onCreate: HandicapCar")
-                                if (availableHandicapSpots <= 0){
-                                    openHandicapCarDialog(stop, name, id, parkingId)
-                                } else{
-                                    stop.preferential = true
-                                    confirmReserve(name, id, stop, parkingId)
-                                }
-                            } else{
-                                Log.d(TAG, "onCreate: Plain")
-                                confirmReserve(name, id, stop, parkingId)
                             }
                         }
                     } else{

@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
+
 class MainUserActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -61,6 +62,7 @@ class MainUserActivity : AppCompatActivity() {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLocation()
+
     }
 
     public override fun onStart() {
@@ -103,5 +105,7 @@ class MainUserActivity : AppCompatActivity() {
         val intent = Intent(this, StartActivity::class.java)
         startActivity(intent)
     }
+
+    companion object
 
 }

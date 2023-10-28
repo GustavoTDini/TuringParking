@@ -1,15 +1,18 @@
 package com.example.turingparking.adapters
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout.LayoutParams
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.turingparking.R
 import com.example.turingparking.classes.ParkingList
 import com.example.turingparking.databinding.ListItemParkingBinding
 import com.example.turingparking.helpers.ParkingListClickListener
@@ -54,14 +57,14 @@ class ParkingListRecyclerViewAdapter(
         val spots = parking.spots
         Log.d(TAG, "onBindViewHolder spots: $spots")
         //val height = holder.redProgressBar.measuredHeight
-        val height = 100
+        val height = 72
         Log.d(TAG, "onBindViewHolder height: $height")
         //Log.d(TAG, "onBindViewHolder: $height")
-        val greenBarHeight = ((spots - usedSpots)*height)/spots
+        val greenBarHeight = ((spots - usedSpots) * height) / spots
         //val greenBarHeight = height/2
         Log.d(TAG, "onBindViewHolder green: $greenBarHeight")
-        val width = 32
-//
+        val width = 36
+
 //        val params = holder.greenProgressBar.layoutParams as ViewGroup.MarginLayoutParams
 //        params.setMargins(0,greenBarHeight,16,8)
 //        //apply params
@@ -102,19 +105,20 @@ class ParkingListRecyclerViewAdapter(
 //            width.toFloat(), height.toFloat()
 //        ))
 
-//        val bitmapRedBarDraw = ResourcesCompat.getDrawable(context.resources, R.drawable.red_bar, null)
-//        val bitmapRedBar = bitmapRedBarDraw?.toBitmap()
-//        val redBar = bitmapRedBar?.let { Bitmap.createScaledBitmap(it, width, height, false) }
-//        holder.redProgressBar.setImageBitmap(redBar)
-//
-//        val bitmapGreenBarDraw = ResourcesCompat.getDrawable(context.resources, R.drawable.green_bar, null)
-//        val bitmapGreenBar = bitmapGreenBarDraw?.toBitmap()
-//        val greenBar = bitmapGreenBar?.let { Bitmap.createScaledBitmap(it, width, greenBarHeight, false) }
-//        holder.greenProgressBar.setImageBitmap(greenBar)
-        holder.greenProgressBar.layoutParams = (LayoutParams(32,50))
-        holder.greenProgressBar.requestLayout()
+        val bitmapRedBarDraw =
+            ResourcesCompat.getDrawable(context.resources, R.drawable.red_bar, null)
+        val bitmapRedBar = bitmapRedBarDraw?.toBitmap()
+        val redBar = bitmapRedBar?.let { Bitmap.createScaledBitmap(it, width, height, false) }
+        holder.redProgressBar.setImageBitmap(redBar)
 
-
+        val bitmapGreenBarDraw =
+            ResourcesCompat.getDrawable(context.resources, R.drawable.green_bar, null)
+        val bitmapGreenBar = bitmapGreenBarDraw?.toBitmap()
+        val greenBar =
+            bitmapGreenBar?.let { Bitmap.createScaledBitmap(it, width, greenBarHeight, false) }
+        holder.greenProgressBar.setImageBitmap(greenBar)
+//        holder.greenProgressBar.layoutParams = (LayoutParams(32,50))
+//        holder.greenProgressBar.requestLayout()
 
 
 //            ScaleDrawable(bitmapGreenBarDraw, Gravity.BOTTOM,

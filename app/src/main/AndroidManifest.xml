@@ -24,9 +24,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TuringParking"
         tools:targetApi="31">
+        <activity
+            android:name=".InsertPromoActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
+
         <activity
             android:name=".user.ParkingViewActivity"
             android:exported="false">
@@ -40,8 +45,8 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".SelectUserTypeActivity"
-            android:label="Selecione seu papel!"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Selecione seu papel!" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
@@ -61,6 +66,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

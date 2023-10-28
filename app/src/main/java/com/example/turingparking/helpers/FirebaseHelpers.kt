@@ -187,24 +187,62 @@ class FirebaseHelpers {
                 .update("estimatedTimeOfArrive", estimatedTime)
         }
 
+        fun decrementUsedParkingSpot(parkingId: String, spotType: String) {
+            val db = Firebase.firestore
+            db.collection("parkings").document(parkingId)
+                .update(
+                    spotType, FieldValue.increment(-1)
+                )
+        }
+
         fun cancelReserve(
             stopId: String,
             spotId: String
         ) {
             val db = Firebase.firestore
             val currentTime = System.currentTimeMillis()
-            Log.d(TAG, "cancelReserve: $stopId")
-            db.collection("stops").document(stopId).get().addOnSuccessListener {document->
+            db.collection("stops").document(stopId).get().addOnSuccessListener { document ->
                 val spot = document.data
-                Log.d(TAG, "cancelReserve: $spot")
-                if (spot != null){
+                if (spot != null) {
                     val electric = spot["electric"] as Boolean
                     val preferential = spot["preferential"] as Boolean
+                    val parkingId = spot["parkingId"] as String
                     db.collection("stops").document(stopId)
-                        .update("timeOfReserveCancel", currentTime, "reserved", false, "occupied", false, "finalized", false, "active", false, "cancelled", true)
+                        .update(
+                            "timeOfReserveCancel",
+                            currentTime,
+                            "reserved",
+                            false,
+                            "occupied",
+                            false,
+                            "finalized",
+                            false,
+                            "active",
+                            false,
+                            "cancelled",
+                            true
+                        )
                     val priority = definePriority(electric, preferential, false, false)
                     db.collection("spots").document(spotId)
-                        .update("carId", "", "occupied", false, "reserveId", "", "reserved", false, "priority", priority)
+                        .update(
+                            "carId",
+                            "",
+                            "occupied",
+                            false,
+                            "reserveId",
+                            "",
+                            "reserved",
+                            false,
+                            "priority",
+                            priority
+                        )
+                    var usedSpot = "usedSpots"
+                    if (electric) {
+                        usedSpot = "usedElectricSpots"
+                    } else if (preferential) {
+                        usedSpot = "usedHandicapSpots"
+                    }
+                    decrementUsedParkingSpot(parkingId, usedSpot)
 
                 }
 

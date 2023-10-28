@@ -56,6 +56,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var googleMap: GoogleMap? = null
+    private var markers: ArrayList<Marker> = ArrayList()
     private var currentPosition: LatLng = LatLng(-23.550244, -46.633908)
     private lateinit var cancelFab: ExtendedFloatingActionButton
     private var carPositionMarker: Marker? = null
@@ -84,8 +85,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onStop() {
         super.onStop()
+        val turingSharing = TuringSharing(MyApplication.applicationContext())
+        val carId = turingSharing.getCarId().toString()
+        if (carId.isNotEmpty()) {
+            carListener.remove()
+        }
         reserveListener.remove()
-        carListener.remove()
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -110,16 +116,37 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         reserveId = currentReserve["id"] as String
                         spotId = currentReserve["spotId"] as String
                         parkingId = currentReserve["parkingId"] as String
-                        getRouteWithDirections(latitudeDest, longitudeDest, currentPosition.latitude, currentPosition.longitude, "driving", requireContext())
                         if (this.googleMap !== null){
                             addMarkerToSelectedParking()
-                            if (reserved){
-                                addCarPositionMark(getCarIcon(currentCarType, currentCarColor), currentPosition)
+                            if (reserved) {
+                                getRouteWithDirections(
+                                    latitudeDest,
+                                    longitudeDest,
+                                    currentPosition.latitude,
+                                    currentPosition.longitude,
+                                    "driving",
+                                    requireContext()
+                                )
+                                addCarPositionMark(
+                                    getCarIcon(currentCarType, currentCarColor),
+                                    currentPosition
+                                )
                                 cancelFab.visibility = View.VISIBLE
 
-                            } else{
+                            } else if (parked) {
+                                getRouteWithDirections(
+                                    latitudeDest,
+                                    longitudeDest,
+                                    currentPosition.latitude,
+                                    currentPosition.longitude,
+                                    "walking",
+                                    requireContext()
+                                )
                                 cancelFab.visibility = View.GONE
-                                addCarPositionMark(getCarIcon(currentCarType, currentCarColor), LatLng(latitudeDest, longitudeDest))
+                                addCarPositionMark(
+                                    getCarIcon(currentCarType, currentCarColor),
+                                    LatLng(latitudeDest, longitudeDest)
+                                )
                                 addWalkPositionMark(currentPosition)
                             }
                         }
@@ -144,8 +171,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         val fragmentView: View = inflater.inflate(R.layout.fragment_maps, container, false)
         cancelFab = fragmentView.findViewById(R.id.map_view_cancel_fab) as ExtendedFloatingActionButton
         cancelFab.setOnClickListener {
-            Log.d(TAG, "onCreateView spot: $spotId")
-            Log.d(TAG, "onCreateView reserve: $reserveId")
             val builder = AlertDialog.Builder(requireContext())
             builder.setMessage("Cancelar a Reserva Atual?")
                 .setCancelable(false)
@@ -159,30 +184,26 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 }
             val alert = builder.create()
             alert.show()
-
-                Log.d(TAG, "onMapReady: Click")
-
-
         }
         val turingSharing = TuringSharing(MyApplication.applicationContext())
         val carId = turingSharing.getCarId().toString()
-        carListener = db.collection("cars").document(carId)
-            .addSnapshotListener { document, e ->
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e)
-                    return@addSnapshotListener
-                }
-                if (document != null) {
-                    if (document.data != null) {
-                        val carType = document.data!!["type"] as Long
-                        val carColor = document.data!!["color"] as Long
-                        currentCarColor = carColor.toInt()
-                        currentCarType = carType.toInt()
-
+        if (carId.isNotEmpty()) {
+            carListener = db.collection("cars").document(carId)
+                .addSnapshotListener { document, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
+                    if (document != null) {
+                        if (document.data != null) {
+                            val carType = document.data!!["type"] as Long
+                            val carColor = document.data!!["color"] as Long
+                            currentCarColor = carColor.toInt()
+                            currentCarType = carType.toInt()
+                        }
                     }
                 }
-            }
-
+        }
 
 
         return fragmentView
@@ -278,6 +299,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun addMarkers() {
+        removeMarkers()
         db.collection("parkings")
             .get()
             .addOnSuccessListener { result ->
@@ -293,10 +315,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                                 .title(name)
                                 .snippet(id)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_turing_parking_map))
-                        }.let { googleMap?.addMarker(it)}
-                    }catch (e: Error){
+                        }.let {
+                            val marker = googleMap?.addMarker(it)
+                            if (marker != null) {
+                                markers.add(marker)
+                            }
+
+                        }
+                    } catch (e: Error) {
                         Log.e(TAG, "addMarkers: $e")
-                    } 
+                    }
                 }
             }
             .addOnFailureListener { exception ->
@@ -304,12 +332,20 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
     }
 
+    private fun removeMarkers() {
+        for (marker in markers) {
+            marker.remove()
+        }
+        markers.clear()
+    }
+
     private fun addMarkerToSelectedParking() {
+        removeMarkers()
         db.collection("parkings").document(parkingId)
             .get()
             .addOnSuccessListener { result ->
                 val parking = result.data
-                if (parking != null){
+                if (parking != null) {
                     val latitude = parking["latitude"] as Double
                     val longitude = parking["longitude"] as Double
                     val name = parking["name"] as String
@@ -319,9 +355,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                             MarkerOptions()
                                 .position(it)
                                 .title(name)
-                                .snippet(id)
+                                .snippet(null)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_turing_parking_map))
-                        }.let { googleMap?.addMarker(it)}
+                        }.let {
+                            val marker = googleMap?.addMarker(it)
+                            if (marker != null) {
+                                markers.add(marker)
+                            }
+                        }
                     }catch (e: Error){
                         Log.e(TAG, "addMarkers: $e")
                     }
@@ -333,10 +374,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
-        return if (marker.snippet !== null){
-            val parkingViewIntent = Intent(context, ParkingViewActivity::class.java)
-            parkingViewIntent.putExtra("id", marker.snippet)
-            startActivity(parkingViewIntent)
+        return if (marker.snippet !== null) {
+            if (!reserved || !parked) {
+                val parkingViewIntent = Intent(context, ParkingViewActivity::class.java)
+                parkingViewIntent.putExtra("id", marker.snippet)
+                startActivity(parkingViewIntent)
+            }
             true
         } else{
             false

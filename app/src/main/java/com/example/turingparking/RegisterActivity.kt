@@ -11,12 +11,18 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.turingparking.firebase_classes.User
+import com.example.turingparking.firebase_classes.Wallet
+import com.example.turingparking.helpers.Helpers
+import com.example.turingparking.helpers.Helpers.Companion.isPasswordValid
 import com.example.turingparking.network.MailHelpers
+import com.example.turingparking.user_fragments.AddCarFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.UUID
 import kotlin.properties.Delegates
 
 class RegisterActivity : AppCompatActivity() {
@@ -63,15 +69,24 @@ class RegisterActivity : AppCompatActivity() {
             }else if (!login.matches(emailRegex.toRegex())) {
                 Toast.makeText(this@RegisterActivity, "Por Favor coloque um e-mail válido", Toast.LENGTH_SHORT).show()
             } else if (exists) {
-                Toast.makeText(this@RegisterActivity, "Usuário com email já existente!", Toast.LENGTH_SHORT).show()
-            } else if (isPasswordValid(passwordEditText.editableText.toString())) {
-                createCode()
+                Toast.makeText(
+                    this@RegisterActivity,
+                    "Usuário com email já existente!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (isPasswordValid(passwordEditText.editableText.toString(), this)) {
+                code = Helpers.createCode(5)
                 createCodeTimeStamp = System.currentTimeMillis()
-                MailHelpers.postMailUsingVolley(loginEditText.editableText.toString(), code, this)
+                MailHelpers.sendMailUsingVolley(
+                    loginEditText.editableText.toString(),
+                    code,
+                    MailHelpers.register,
+                    this
+                )
                 confirmLayout.visibility = View.VISIBLE
                 registerLayout.visibility = View.GONE
             }
-    }
+        }
 
 
         val returnButton = findViewById<Button>(R.id.returnBtn)
@@ -91,9 +106,14 @@ class RegisterActivity : AppCompatActivity() {
 
         val resendButton = findViewById<Button>(R.id.resendBtn)
         resendButton.setOnClickListener{
-            createCode()
+            code = Helpers.createCode(5)
             createCodeTimeStamp = System.currentTimeMillis()
-            MailHelpers.postMailUsingVolley(loginEditText.editableText.toString(), code, this)
+            MailHelpers.sendMailUsingVolley(
+                loginEditText.editableText.toString(),
+                code,
+                MailHelpers.register,
+                this
+            )
         }
     }
 
@@ -106,17 +126,41 @@ class RegisterActivity : AppCompatActivity() {
                     val user = auth.currentUser
                     val uId = user?.uid
                     if (uId != null) {
-                        val dbUser = hashMapOf(
-                            "nome" to "",
-                            "email" to login,
-                            "userId" to uId,
-                        )
+                        val dbUser = User(uId, login)
                         db.collection("users").document(uId)
                             .set(dbUser)
-                            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
+                            .addOnSuccessListener {
+                                Log.d(TAG, "DocumentSnapshot successfully written!")
+                                val wallet = Wallet(uId)
+                                val id = UUID.randomUUID().toString()
+                                wallet.id = id
+                                wallet.currentValue = 0.0
+                                db.collection("wallets").document(id).set(wallet)
+                                    .addOnSuccessListener {
+                                        Log.d(
+                                            AddCarFragment.TAG,
+                                            "DocumentSnapshot successfully written!"
+                                        )
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.w(
+                                            AddCarFragment.TAG,
+                                            "Error writing document",
+                                            e
+                                        )
+                                    }
+                                db.collection("promoCodes").whereEqualTo("email", login).get()
+                                    .addOnSuccessListener { document ->
+                                        val promos = document.documents
+                                        if (promos.isEmpty()) {
+                                            openLoginIntent()
+                                        } else {
+                                            openPromoIntent()
+                                        }
+                                    }
+                            }
                             .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
                     }
-                    openLoginIntent()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
@@ -130,34 +174,11 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
-    fun isPasswordValid(password: String): Boolean {
-        if (password.length < 8) {
-            Toast.makeText(this@RegisterActivity, "A Senha deve ter no minimo 8 digitos", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (password.filter { it.isDigit() }.firstOrNull() == null){
-            Toast.makeText(this@RegisterActivity, "A Senha deve ter no minimo 1 numero", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (password.filter { it.isLetter() }.filter { it.isUpperCase() }.firstOrNull() == null){
-            Toast.makeText(this@RegisterActivity, "A Senha deve ter no minimo 1 caractere maiusculo", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (password.filter { it.isLetter() }.filter { it.isLowerCase() }.firstOrNull() == null){
-            Toast.makeText(this@RegisterActivity, "A Senha deve ter no minimo 1 caractere minusculo", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (password.filter { !it.isLetterOrDigit() }.firstOrNull() == null) {
-            Toast.makeText(this@RegisterActivity, "A Senha deve ter no minimo 1 caractere especial", Toast.LENGTH_SHORT).show()
-            return false
-        }
 
-        return true
-    }
-
-    private fun createCode(){
-        val charPool : List<Char> = ('A'..'Z') + ('0'..'9')
-        code = List(5) { charPool.random() }.joinToString("")
+    private fun openPromoIntent() {
+        Toast.makeText(this@RegisterActivity, "Salvo", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, InsertPromoActivity::class.java)
+        startActivity(intent)
     }
 
     private fun openLoginIntent() {

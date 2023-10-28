@@ -159,23 +159,15 @@
                 android:layout_margin="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:text="Atualizar Email" />
-
-            <Button
-                android:id="@+id/account_confirm_code_button"
-                android:layout_margin="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="Confirmar Troca de Email" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:visibility="gone"
-                android:text="Código"/>
+                android:text="Código" />
 
             <EditText
                 android:id="@+id/account_code_edit_text"
@@ -184,6 +176,14 @@
                 android:ems="10"
                 android:visibility="gone"
                 android:inputType="text" />
+
+            <Button
+                android:id="@+id/account_confirm_code_button"
+                android:layout_margin="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="Confirmar Troca de Email" />
 
             <Spinner
                 android:id="@+id/account_language_spinner"
